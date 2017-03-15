@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc ../lib/libmy_qt_graphics_api.a  CMakeFiles/my_qt_graphics_api.dir/graphicshexagonitem.cpp.o CMakeFiles/my_qt_graphics_api.dir/graphicsarrowitem.cpp.o CMakeFiles/my_qt_graphics_api.dir/graphicsview.cpp.o CMakeFiles/my_qt_graphics_api.dir/my_qt_graphics_api_automoc.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib ../lib/libmy_qt_graphics_api.a
