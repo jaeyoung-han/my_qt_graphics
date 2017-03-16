@@ -5,6 +5,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/Users/Jaeyoung/Workspace/my_qt_graphics/example/CollimatorSectionalView.cpp" "/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/CMakeFiles/example.dir/CollimatorSectionalView.cpp.o"
+  "/Users/Jaeyoung/Workspace/my_qt_graphics/example/DockCollimator.cpp" "/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/CMakeFiles/example.dir/DockCollimator.cpp.o"
   "/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.cpp" "/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/CMakeFiles/example.dir/example_automoc.cpp.o"
   "/Users/Jaeyoung/Workspace/my_qt_graphics/example/main.cpp" "/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/CMakeFiles/example.dir/main.cpp.o"
   "/Users/Jaeyoung/Workspace/my_qt_graphics/example/mainwindow.cpp" "/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/CMakeFiles/example.dir/mainwindow.cpp.o"

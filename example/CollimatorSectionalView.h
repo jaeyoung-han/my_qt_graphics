@@ -1,8 +1,12 @@
 #ifndef __COLLIMATOR_SECTIONAL_VIEW_H__
 #define __COLLIMATOR_SECTIONAL_VIEW_H__
 
+#include <QList>
 #include "graphicsview.h"
+#include "graphicshexagonitem.h"
 #include "data_types.h"
+
+class QGraphicsItemGroup;
 
 namespace LCR {
 
@@ -10,19 +14,26 @@ namespace LCR {
   {
     Q_OBJECT
   public:
-    CollimatorSectionalView(qreal _diameter = 0, qreal _septa = 0, QWidget *parent = Q_NULLPTR);
+    CollimatorSectionalView(double ins_diameter = 0, double _septa = 0, QWidget *parent = Q_NULLPTR);
     virtual ~CollimatorSectionalView();
 
-    void setHole(qreal diameter, qreal septa);
+    void setCollimatorSize(const v3& coll_size);
+    void setParameters(double diameter, double septa);
 
-  protected:
     void buildHoles();
+    void updateBase();
+    void updateHoles();
 
   private:
-    qreal diameter;
-    qreal septa;
+    QGraphicsRectItem* base_item;
+    QGraphicsItemGroup* hex_group;
+    QList<QGraphicsItem*> hex_list;
 
-    Collimator data;
+
+    double diameter;  // inscribed circle
+    double septa;
+
+    v3 size;
   };
 
 };

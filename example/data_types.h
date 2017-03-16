@@ -2,6 +2,11 @@
 #define __LCR_DATA_TYPES_H__
 
 namespace LCR {
+  enum CONVERGENCE {
+    Converging = 0,
+    Diverging = 1,
+  };
+
   struct v3 {
     double x;
     double y;
@@ -9,10 +14,13 @@ namespace LCR {
   };
 
   struct Collimator {
-    double diameter;
-    double septa;
-
     v3 size;
+    double focus_distance;
+    int direction;
+    double diameter[2];
+    double septa[2];
+    double section_height;
+    double focus_width;
   };
 };
 

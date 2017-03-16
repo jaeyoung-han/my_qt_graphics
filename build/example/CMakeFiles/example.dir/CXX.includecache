@@ -25,12 +25,22 @@ QGraphicsView
 /Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.cpp
 example_automoc.dir/moc_CollimatorSect_CTXUSSURSN7DCD.cpp
 /Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.dir/moc_CollimatorSect_CTXUSSURSN7DCD.cpp
+example_automoc.dir/moc_DockCollimator_GE3R7MVL6UXXVV.cpp
+/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.dir/moc_DockCollimator_GE3R7MVL6UXXVV.cpp
 example_automoc.dir/moc_mainwindow_L2CLFKCLUYECYY.cpp
 /Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.dir/moc_mainwindow_L2CLFKCLUYECYY.cpp
 
 /Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.dir/moc_CollimatorSect_CTXUSSURSN7DCD.cpp
 ../../../example/CollimatorSectionalView.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/CollimatorSectionalView.h
+QtCore/qbytearray.h
+-
+QtCore/qmetatype.h
+-
+
+/Users/Jaeyoung/Workspace/my_qt_graphics/build/example/example_automoc.dir/moc_DockCollimator_GE3R7MVL6UXXVV.cpp
+../../../example/DockCollimator.h
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/DockCollimator.h
 QtCore/qbytearray.h
 -
 QtCore/qmetatype.h
@@ -45,14 +55,32 @@ QtCore/qmetatype.h
 -
 
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/CollimatorSectionalView.cpp
+QtMath
+-
 CollimatorSectionalView.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/CollimatorSectionalView.h
 graphicshexagonitem.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/graphicshexagonitem.h
 
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/CollimatorSectionalView.h
+QList
+-
 graphicsview.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/graphicsview.h
+graphicshexagonitem.h
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/graphicshexagonitem.h
+data_types.h
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/data_types.h
+
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/DockCollimator.cpp
+QtWidgets
+-
+DockCollimator.h
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/DockCollimator.h
+
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/DockCollimator.h
+QDockWidget
+-
 data_types.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/data_types.h
 
@@ -65,20 +93,68 @@ mainwindow.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/mainwindow.h
 
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/mainwindow.cpp
-QSplitter
--
-QLayout
+QtWidgets
 -
 mainwindow.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/mainwindow.h
 graphicsarrowitem.h
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/graphicsarrowitem.h
+DockCollimator.h
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/DockCollimator.h
 
 /Users/Jaeyoung/Workspace/my_qt_graphics/example/mainwindow.h
 QMainWindow
 -
-graphicsview.h
-/Users/Jaeyoung/Workspace/my_qt_graphics/example/graphicsview.h
+CollimatorSectionalView.h
+/Users/Jaeyoung/Workspace/my_qt_graphics/example/CollimatorSectionalView.h
+
+/usr/local/opt/qt5/lib/QtCore.framework/Headers/QList
+qlist.h
+/usr/local/opt/qt5/lib/QtCore.framework/Headers/qlist.h
+
+/usr/local/opt/qt5/lib/QtCore.framework/Headers/QtMath
+qmath.h
+/usr/local/opt/qt5/lib/QtCore.framework/Headers/qmath.h
+
+/usr/local/opt/qt5/lib/QtCore.framework/Headers/qlist.h
+QtCore/qalgorithms.h
+-
+QtCore/qiterator.h
+-
+QtCore/qrefcount.h
+-
+QtCore/qarraydata.h
+-
+QtCore/qhashfunctions.h
+-
+iterator
+-
+list
+-
+algorithm
+-
+initializer_list
+-
+stdlib.h
+-
+new
+-
+limits.h
+-
+string.h
+-
+QtCore/qbytearraylist.h
+-
+QtCore/qstringlist.h
+-
+
+/usr/local/opt/qt5/lib/QtCore.framework/Headers/qmath.h
+QtCore/qglobal.h
+-
+QtCore/qalgorithms.h
+-
+cmath
+-
 
 /usr/local/opt/qt5/lib/QtGui.framework/Headers/QPainter
 qpainter.h
@@ -120,6 +196,10 @@ QtGui/qfontmetrics.h
 qapplication.h
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qapplication.h
 
+/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/QDockWidget
+qdockwidget.h
+/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qdockwidget.h
+
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/QGraphicsItem
 qgraphicsitem.h
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qgraphicsitem.h
@@ -132,17 +212,9 @@ qgraphicsitem.h
 qgraphicsview.h
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qgraphicsview.h
 
-/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/QLayout
-qlayout.h
-/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qlayout.h
-
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/QMainWindow
 qmainwindow.h
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qmainwindow.h
-
-/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/QSplitter
-qsplitter.h
-/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qsplitter.h
 
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qapplication.h
 QtWidgets/qtwidgetsglobal.h
@@ -160,6 +232,12 @@ QtGui/qcursor.h
 QtWidgets/qdesktopwidget.h
 -
 QtGui/qguiapplication.h
+-
+
+/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qdockwidget.h
+QtWidgets/qtwidgetsglobal.h
+-
+QtWidgets/qwidget.h
 -
 
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qgraphicsitem.h
@@ -190,26 +268,6 @@ QtWidgets/qscrollarea.h
 QtWidgets/qgraphicsscene.h
 -
 
-/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qlayout.h
-QtWidgets/qtwidgetsglobal.h
--
-QtCore/qobject.h
--
-QtWidgets/qlayoutitem.h
--
-QtWidgets/qsizepolicy.h
--
-QtCore/qrect.h
--
-QtCore/qmargins.h
--
-limits.h
--
-QtWidgets/qboxlayout.h
--
-QtWidgets/qgridlayout.h
--
-
 /usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qmainwindow.h
 QtWidgets/qtwidgetsglobal.h
 -
@@ -218,11 +276,5 @@ QtWidgets/qwidget.h
 QtWidgets/qtabwidget.h
 -
 
-/usr/local/opt/qt5/lib/QtWidgets.framework/Headers/qsplitter.h
-QtWidgets/qtwidgetsglobal.h
--
-QtWidgets/qframe.h
--
-QtWidgets/qsizepolicy.h
--
+/usr/local/opt/qt5/lib/QtWidgets.framework/QtWidgets
 

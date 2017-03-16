@@ -85,7 +85,7 @@ api/preinstall:
 api/CMakeFiles/my_qt_graphics_api.dir/all: api/CMakeFiles/my_qt_graphics_api_automoc.dir/all
 	$(MAKE) -f api/CMakeFiles/my_qt_graphics_api.dir/build.make api/CMakeFiles/my_qt_graphics_api.dir/depend
 	$(MAKE) -f api/CMakeFiles/my_qt_graphics_api.dir/build.make api/CMakeFiles/my_qt_graphics_api.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=7,8,9,10,11 "Built target my_qt_graphics_api"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=8,9,10,11,12 "Built target my_qt_graphics_api"
 .PHONY : api/CMakeFiles/my_qt_graphics_api.dir/all
 
 # Include target in all.
@@ -122,7 +122,7 @@ clean: api/CMakeFiles/my_qt_graphics_api.dir/clean
 api/CMakeFiles/my_qt_graphics_api_automoc.dir/all:
 	$(MAKE) -f api/CMakeFiles/my_qt_graphics_api_automoc.dir/build.make api/CMakeFiles/my_qt_graphics_api_automoc.dir/depend
 	$(MAKE) -f api/CMakeFiles/my_qt_graphics_api_automoc.dir/build.make api/CMakeFiles/my_qt_graphics_api_automoc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=12 "Built target my_qt_graphics_api_automoc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=13 "Built target my_qt_graphics_api_automoc"
 .PHONY : api/CMakeFiles/my_qt_graphics_api_automoc.dir/all
 
 # Build rule for subdir invocation for target.
@@ -174,7 +174,7 @@ example/CMakeFiles/example.dir/all: api/CMakeFiles/my_qt_graphics_api.dir/all
 example/CMakeFiles/example.dir/all: example/CMakeFiles/example_automoc.dir/all
 	$(MAKE) -f example/CMakeFiles/example.dir/build.make example/CMakeFiles/example.dir/depend
 	$(MAKE) -f example/CMakeFiles/example.dir/build.make example/CMakeFiles/example.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target example"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=1,2,3,4,5,6 "Built target example"
 .PHONY : example/CMakeFiles/example.dir/all
 
 # Include target in all.
@@ -184,7 +184,7 @@ all: example/CMakeFiles/example.dir/all
 
 # Build rule for subdir invocation for target.
 example/CMakeFiles/example.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles 13
 	$(MAKE) -f CMakeFiles/Makefile2 example/CMakeFiles/example.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles 0
 .PHONY : example/CMakeFiles/example.dir/rule
@@ -211,7 +211,7 @@ clean: example/CMakeFiles/example.dir/clean
 example/CMakeFiles/example_automoc.dir/all:
 	$(MAKE) -f example/CMakeFiles/example_automoc.dir/build.make example/CMakeFiles/example_automoc.dir/depend
 	$(MAKE) -f example/CMakeFiles/example_automoc.dir/build.make example/CMakeFiles/example_automoc.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=6 "Built target example_automoc"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/Users/Jaeyoung/Workspace/my_qt_graphics/build/CMakeFiles --progress-num=7 "Built target example_automoc"
 .PHONY : example/CMakeFiles/example_automoc.dir/all
 
 # Build rule for subdir invocation for target.

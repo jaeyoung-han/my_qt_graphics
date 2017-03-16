@@ -15,18 +15,24 @@ namespace MQGAPI {
 
     void setOrigin(const QPointF& center);
     void setOrigin(qreal x, qreal y);
+    void setScale(qreal scale_factor);
+    qreal getScale() const { return scale_factor; }
     const QPointF& getOrigin() const;
+
+    QPointF pixelToReal(const QPointF& pixel);
+    QPointF pixelToReal(qreal x, qreal y);
+    QPointF realToPixel(const QPointF& real);
+    QPointF realToPixel(qreal x, qreal y);
 
   protected:
     virtual void initialize();
     virtual void resizeEvent(QResizeEvent* event);
 
     void resetAxis();
-    QPointF pixelToReal(const QPointF& pixel);
-    QPointF realToPixel(const QPointF& real);
 
   private:
     QPointF origin;
+    qreal scale_factor;
     GraphicsArrowItem* x_axis;
     GraphicsArrowItem* y_axis;
   };

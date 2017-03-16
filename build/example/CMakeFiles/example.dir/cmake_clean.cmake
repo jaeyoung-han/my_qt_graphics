@@ -1,5 +1,6 @@
 file(REMOVE_RECURSE
   "example_automoc.cpp"
+  "CMakeFiles/example.dir/DockCollimator.cpp.o"
   "CMakeFiles/example.dir/CollimatorSectionalView.cpp.o"
   "CMakeFiles/example.dir/mainwindow.cpp.o"
   "CMakeFiles/example.dir/main.cpp.o"

@@ -167,6 +167,33 @@ CollimatorSectionalView.cpp.s:
 	cd /Users/Jaeyoung/Workspace/my_qt_graphics/build && $(MAKE) -f example/CMakeFiles/example.dir/build.make example/CMakeFiles/example.dir/CollimatorSectionalView.cpp.s
 .PHONY : CollimatorSectionalView.cpp.s
 
+DockCollimator.o: DockCollimator.cpp.o
+
+.PHONY : DockCollimator.o
+
+# target to build an object file
+DockCollimator.cpp.o:
+	cd /Users/Jaeyoung/Workspace/my_qt_graphics/build && $(MAKE) -f example/CMakeFiles/example.dir/build.make example/CMakeFiles/example.dir/DockCollimator.cpp.o
+.PHONY : DockCollimator.cpp.o
+
+DockCollimator.i: DockCollimator.cpp.i
+
+.PHONY : DockCollimator.i
+
+# target to preprocess a source file
+DockCollimator.cpp.i:
+	cd /Users/Jaeyoung/Workspace/my_qt_graphics/build && $(MAKE) -f example/CMakeFiles/example.dir/build.make example/CMakeFiles/example.dir/DockCollimator.cpp.i
+.PHONY : DockCollimator.cpp.i
+
+DockCollimator.s: DockCollimator.cpp.s
+
+.PHONY : DockCollimator.s
+
+# target to generate assembly for a file
+DockCollimator.cpp.s:
+	cd /Users/Jaeyoung/Workspace/my_qt_graphics/build && $(MAKE) -f example/CMakeFiles/example.dir/build.make example/CMakeFiles/example.dir/DockCollimator.cpp.s
+.PHONY : DockCollimator.cpp.s
+
 example_automoc.o: example_automoc.cpp.o
 
 .PHONY : example_automoc.o
@@ -261,6 +288,9 @@ help:
 	@echo "... CollimatorSectionalView.o"
 	@echo "... CollimatorSectionalView.i"
 	@echo "... CollimatorSectionalView.s"
+	@echo "... DockCollimator.o"
+	@echo "... DockCollimator.i"
+	@echo "... DockCollimator.s"
 	@echo "... example_automoc.o"
 	@echo "... example_automoc.i"
 	@echo "... example_automoc.s"

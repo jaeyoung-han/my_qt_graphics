@@ -9,6 +9,7 @@ using namespace MQGAPI;
 GraphicsView::GraphicsView(QWidget *parent)
   : QGraphicsView(parent)
   , origin(0, 0)
+  , scale_factor(10)
   , x_axis(Q_NULLPTR)
   , y_axis(Q_NULLPTR)
 {
@@ -21,12 +22,22 @@ GraphicsView::~GraphicsView()
 
 QPointF GraphicsView::pixelToReal(const QPointF& pixel)
 {
-  return QPointF(pixel.x() - origin.x(), origin.y() - pixel.y());
+  return pixelToReal(pixel.x(), pixel.y());
+}
+
+QPointF GraphicsView::pixelToReal(qreal x, qreal y)
+{
+  return QPointF(x - origin.x(), origin.y() - y) / scale_factor;
 }
 
 QPointF GraphicsView::realToPixel(const QPointF& real)
 {
-  return QPointF(real.x() + origin.x(), origin.y() - real.y());
+  return realToPixel(real.x(), real.y());
+}
+
+QPointF GraphicsView::realToPixel(qreal x, qreal y)
+{
+  return QPointF(x * scale_factor + origin.x(), origin.y() - y * scale_factor);
 }
 
 void GraphicsView::resizeEvent(QResizeEvent* event)
@@ -51,6 +62,12 @@ void GraphicsView::setOrigin(const QPointF& center)
   setOrigin(center.x(), center.y());
 }
 
+void GraphicsView::setScale(qreal new_scale)
+{
+  Q_ASSERT(new_scale > 0);
+  scale_factor = new_scale;
+}
+
 const QPointF& GraphicsView::getOrigin() const
 {
   return origin;
@@ -65,8 +82,8 @@ void GraphicsView::initialize()
 void GraphicsView::resetAxis()
 {
   QRectF rect = this->rect();
-  qreal W = rect.width();
-  qreal H = rect.height();
+  qreal W = qAbs(origin.x()) * 2;//rect.width();
+  qreal H = qAbs(origin.y()) * 2;//rect.height();
 
   if (!x_axis) {
     x_axis = new GraphicsArrowItem(0, origin.y(), W, origin.y(), false);

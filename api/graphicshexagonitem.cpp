@@ -9,10 +9,6 @@ GraphicsHexagonItem::GraphicsHexagonItem(qreal diameter, qreal angle, QGraphicsI
   buildVertices(diameter, angle);
 }
 
-GraphicsHexagonItem::~GraphicsHexagonItem()
-{
-}
-
 void GraphicsHexagonItem::buildVertices(qreal diameter, qreal angle)
 {
   Q_ASSERT(diameter > 0);

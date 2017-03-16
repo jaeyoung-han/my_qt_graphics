@@ -18,11 +18,13 @@ include_directories(
 
 set(HEADERS
   data_types.h
+  DockCollimator.h
   CollimatorSectionalView.h
   mainwindow.h
 )
 
 set(SOURCES
+  DockCollimator.cpp
   CollimatorSectionalView.cpp
   mainwindow.cpp
   main.cpp
