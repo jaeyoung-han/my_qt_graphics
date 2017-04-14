@@ -98,11 +98,18 @@ void DockCollimator::initialize()
   dsb_septa[0]->setDecimals(2);
   dsb_septa[0]->setSingleStep(0.01);
 
+  lb_p_side_open_area = new QLabel(this);
+  lb_p_side_hole_num = new QLabel(this);
+
   QGridLayout* grid_ex = new QGridLayout();
   grid_ex->addWidget(newLabel(tr("Diameter (mm): ")), 0, 0);
   grid_ex->addWidget(newLabel(tr("Septa (mm): ")), 1, 0);
+  grid_ex->addWidget(newLabel(tr("Open Area Ratio: ")), 2, 0);
+  grid_ex->addWidget(newLabel(tr("Hole #: ")), 3, 0);
   grid_ex->addWidget(dsb_diameter[0], 0, 1);
   grid_ex->addWidget(dsb_septa[0], 1, 1);
+  grid_ex->addWidget(lb_p_side_open_area, 2, 1);
+  grid_ex->addWidget(lb_p_side_hole_num, 3, 1);
 
   QGroupBox* gb_ex = new QGroupBox(tr("Patient side"));
   gb_ex->setLayout(grid_ex);
@@ -119,11 +126,18 @@ void DockCollimator::initialize()
   dsb_septa[1]->setDecimals(2);
   dsb_septa[1]->setSingleStep(0.01);
 
+  lb_x_side_open_area = new QLabel(this);
+  lb_x_side_hole_num = new QLabel(this);
+
   QGridLayout* grid_en = new QGridLayout();
   grid_en->addWidget(newLabel(tr("Diameter (mm): ")), 0, 0);
   grid_en->addWidget(newLabel(tr("Septa (mm): ")), 1, 0);
+  grid_en->addWidget(newLabel(tr("Open Area Ratio: ")), 2, 0);
+  grid_en->addWidget(newLabel(tr("Hole #: ")), 3, 0);
   grid_en->addWidget(dsb_diameter[1], 0, 1);
   grid_en->addWidget(dsb_septa[1], 1, 1);
+  grid_en->addWidget(lb_x_side_open_area, 2, 1);
+  grid_en->addWidget(lb_x_side_hole_num, 3, 1);
 
   QGroupBox* gb_en = new QGroupBox(tr("X-ray side"));
   gb_en->setLayout(grid_en);
@@ -154,20 +168,20 @@ void DockCollimator::initialize()
   vbLayout->addLayout(grid_sec);
   vbLayout->addStretch();
 
-  connect(dsb_length, SIGNAL(editingFinished()), this, SLOT(sizeUpdated()));
-  connect(dsb_width,  SIGNAL(editingFinished()), this, SLOT(sizeUpdated()));
-  connect(dsb_height, SIGNAL(editingFinished()), this, SLOT(sizeUpdated()));
+  connect(dsb_length, SIGNAL(valueChanged(double)), this, SLOT(sizeUpdated()));
+  connect(dsb_width,  SIGNAL(valueChanged(double)), this, SLOT(sizeUpdated()));
+  connect(dsb_height, SIGNAL(valueChanged(double)), this, SLOT(sizeUpdated()));
 
-  connect(dsb_focus, SIGNAL(editingFinished()), this, SLOT(sizeUpdated()));
+  connect(dsb_focus, SIGNAL(valueChanged(double)), this, SLOT(sizeUpdated()));
 
   connect(rb_direction[0], SIGNAL(clicked(bool)), this, SLOT(convergentClicked(bool)));
   connect(rb_direction[1], SIGNAL(clicked(bool)), this, SLOT(divergentClicked(bool)));
 
-  connect(dsb_diameter[0], SIGNAL(editingFinished()), this, SLOT(parameterUpdated()));
-  connect(dsb_septa[0],    SIGNAL(editingFinished()), this, SLOT(parameterUpdated()));
+  connect(dsb_diameter[0], SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
+  connect(dsb_septa[0],    SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
 
-  connect(dsb_diameter[1], SIGNAL(editingFinished()), this, SLOT(parameterUpdated()));
-  connect(dsb_septa[1],    SIGNAL(editingFinished()), this, SLOT(parameterUpdated()));
+  connect(dsb_diameter[1], SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
+//  connect(dsb_septa[1],    SIGNAL(editingFinished()), this, SLOT(parameterUpdated()));
 
   connect(dsb_section_height, SIGNAL(valueChanged(double)), this, SLOT(sectionUpdated()));
 
@@ -189,6 +203,19 @@ void DockCollimator::update(const Collimator& data)
   dsb_diameter[1]->setValue(data.diameter[1]);
   dsb_septa[0]->setValue(data.septa[0]);
   dsb_septa[1]->setValue(data.septa[1]);
+
+  double oar = 1 / (data.septa[0] / data.diameter[0] + 1);
+  lb_p_side_open_area->setText(QString::number(oar*oar));
+  oar = 1 / (data.septa[1] / data.diameter[1] + 1);
+  lb_x_side_open_area->setText(QString::number(oar*oar));
+
+  //if (data.diameter[0] * data.diameter[1] * data.septa[0] * data.septa[1]) 
+  {
+	  oar = 2 * 100 / (sqrt(3) * (data.diameter[0] + data.septa[0]) * (data.diameter[0] + data.septa[0]));
+	  lb_p_side_hole_num->setText(QString::number(oar));
+	  oar = 2 * 100 / (sqrt(3) * (data.diameter[1] + data.septa[1]) * (data.diameter[1] + data.septa[1]));
+	  lb_x_side_hole_num->setText(QString::number(oar));
+  }
 
   lb_focus_width->setText(QString::number(data.focus_width));
 }

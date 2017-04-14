@@ -9,6 +9,7 @@ using namespace LCR;
 
 MainWindow::MainWindow()
 {
+  // Horizontal Sectional View
   gview_top = new CollimatorSectionalView();
   gview_top->setOrigin(200, 200);
   gview_top->setScale(10);
@@ -21,6 +22,7 @@ MainWindow::MainWindow()
   gview_bottom->setOrigin(200, 200);
   gview_bottom->setScale(10);
 
+  // H-Section Splitter
   QSplitter* splitter = new QSplitter();
 
   splitter->addWidget(gview_top);
@@ -28,7 +30,24 @@ MainWindow::MainWindow()
   splitter->addWidget(gview_bottom);
   splitter->setOrientation(Qt::Vertical);
 
-  setCentralWidget(splitter);
+  // Vertical Sectional View
+  gview_umbra = new UmbraView();
+  gview_umbra->setOrigin(200, 200);
+  gview_umbra->setScale(10);
+
+
+  // Main Splitter
+  QSplitter* main_splitter = new QSplitter();
+
+  main_splitter->addWidget(splitter);
+  main_splitter->addWidget(gview_umbra);
+  main_splitter->setOrientation(Qt::Horizontal);
+
+
+  // Set Main widget
+  setCentralWidget(main_splitter);
+
+
 
   createActions();
   createMenus();

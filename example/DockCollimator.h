@@ -46,6 +46,10 @@ private:
 
   QDoubleSpinBox* dsb_section_height;
 
+  QLabel* lb_p_side_open_area;
+  QLabel* lb_x_side_open_area;
+  QLabel* lb_p_side_hole_num;
+  QLabel* lb_x_side_hole_num;
   QLabel* lb_focus_width;
 
   int direction;

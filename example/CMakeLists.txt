@@ -20,12 +20,14 @@ set(HEADERS
   data_types.h
   DockCollimator.h
   CollimatorSectionalView.h
+  UmbraView.h
   mainwindow.h
 )
 
 set(SOURCES
   DockCollimator.cpp
   CollimatorSectionalView.cpp
+  UmbraView.cpp
   mainwindow.cpp
   main.cpp
 )

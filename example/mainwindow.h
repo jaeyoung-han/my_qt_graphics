@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "CollimatorSectionalView.h"
+#include "UmbraView.h"
 
 using namespace MQGAPI;
 
@@ -39,6 +40,7 @@ private:
   LCR::CollimatorSectionalView* gview_top;
   LCR::CollimatorSectionalView* gview_section;
   LCR::CollimatorSectionalView* gview_bottom;
+  LCR::UmbraView* gview_umbra;
 
   DockCollimator* dockCollimator;
 };
