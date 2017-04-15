@@ -22,6 +22,8 @@ private slots:
   void sizeUpdated();
   void parameterUpdated();
   void sectionUpdated();
+  void loadSettings();
+  void saveSettings();
 
 protected:
   void createActions();
@@ -43,6 +45,8 @@ private:
   LCR::UmbraView* gview_umbra;
 
   DockCollimator* dockCollimator;
+
+  LCR::Collimator collimator;
 };
 
 #endif // __EXAMPLE_MAINWINDOW_H__

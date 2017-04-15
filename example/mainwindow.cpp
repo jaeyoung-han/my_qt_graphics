@@ -1,4 +1,5 @@
 #include <QtWidgets>
+#include <QSettings>
 #include "mainwindow.h"
 
 #include "graphicsarrowitem.h"
@@ -47,6 +48,7 @@ MainWindow::MainWindow()
   // Set Main widget
   setCentralWidget(main_splitter);
 
+  loadSettings();
 
 
   createActions();
@@ -95,25 +97,56 @@ void MainWindow::createDocks()
   connect(dockCollimator, SIGNAL(updateSize()), this, SLOT(sizeUpdated()));
   connect(dockCollimator, SIGNAL(updateParameters()), this, SLOT(parameterUpdated()));
   connect(dockCollimator, SIGNAL(updateSection()), this, SLOT(sectionUpdated()));
+
+  dockCollimator->update(collimator);
+}
+
+void MainWindow::loadSettings()
+{
+	QSettings settings;
+	collimator.diameter[0] = settings.value("DIAMETER_PATIENT_SIDE", 2.0).toDouble();
+	collimator.diameter[1] = settings.value("DIAMETER_X-RAY_SIDE", 2.5).toDouble();
+	collimator.septa[0] = settings.value("SEPTA_PATIENT_SIDE", 0.3).toDouble();
+	collimator.direction = settings.value("HEXAGON_DIRECTION", 0).toInt();
+
+	collimator.size.x = settings.value("COLLIMATOR_LENGTH", 30).toDouble();
+	collimator.size.y = settings.value("COLLIMATOR_WIDTH", 30).toDouble();
+	collimator.size.z = settings.value("COLLIMATOR_HEIGHT", 100).toDouble();
+	collimator.focus_distance = settings.value("FOCAL_LENGTH", 500).toDouble();
+}
+
+void MainWindow::saveSettings()
+{
+	QSettings settings;
+
+	settings.setValue("DIAMETER_PATIENT_SIDE", collimator.diameter[0]);
+	settings.setValue("DIAMETER_X-RAY_SIDE", collimator.diameter[1]);
+	settings.setValue("SEPTA_PATIENT_SIDE", collimator.septa[0]);
+	settings.setValue("HEXAGON_DIRECTION", collimator.direction);
+
+	settings.setValue("COLLIMATOR_LENGTH", collimator.size.x);
+	settings.setValue("COLLIMATOR_WIDTH", collimator.size.y);
+	settings.setValue("COLLIMATOR_HEIGHT", collimator.size.z);
+	settings.setValue("FOCAL_LENGTH", collimator.focus_distance);
 }
 
 void MainWindow::sizeUpdated()
 {
-  Collimator data = dockCollimator->getData();
-  gview_bottom->setCollimatorSize(data.size);
+  collimator = dockCollimator->getData();
+  gview_bottom->setCollimatorSize(collimator.size);
 //  gview_bottom->buildHoles();
 
-  double ratio =(data.focus_distance - data.size.z)/data.focus_distance;
+  double ratio =(collimator.focus_distance - collimator.size.z)/ collimator.focus_distance;
   v3 top_size;
-  top_size.x = data.size.x * ratio;
-  top_size.y = data.size.y * ratio;
+  top_size.x = collimator.size.x * ratio;
+  top_size.y = collimator.size.y * ratio;
   gview_top->setCollimatorSize(top_size);
   // gview_top->buildHoles();
 
-  ratio =(data.focus_distance - data.section_height)/data.focus_distance;
+  ratio =(collimator.focus_distance - collimator.section_height)/ collimator.focus_distance;
   v3 section_size;
-  section_size.x = data.size.x * ratio;
-  section_size.y = data.size.y * ratio;
+  section_size.x = collimator.size.x * ratio;
+  section_size.y = collimator.size.y * ratio;
   gview_section->setCollimatorSize(section_size);
   // gview_section->buildHoles();
 
@@ -122,79 +155,80 @@ void MainWindow::sizeUpdated()
 
 void MainWindow::parameterUpdated()
 {
-  Collimator data = dockCollimator->getData();
+  collimator = dockCollimator->getData();
 
-  gview_top->setParameters(data.diameter[0], data.septa[0]);
+  gview_top->setParameters(collimator.diameter[0], collimator.septa[0]);
   gview_top->buildHoles();
 
-  if (data.direction == Converging) {
+  if (collimator.direction == Converging) {
     // Calculate entrance plane
-    double ratio = (data.focus_distance - data.size.z)/data.focus_distance;
-    data.diameter[1] = data.diameter[0] / ratio;
-    data.septa[1] = data.septa[0] / ratio;
-    gview_bottom->setParameters(data.diameter[1], data.septa[1]);
+    double ratio = (collimator.focus_distance - collimator.size.z)/ collimator.focus_distance;
+	collimator.diameter[1] = collimator.diameter[0] / ratio;
+	collimator.septa[1] = collimator.septa[0] / ratio;
+    gview_bottom->setParameters(collimator.diameter[1], collimator.septa[1]);
     gview_bottom->buildHoles();
 
     // Calculate sectional plane
-    ratio =(data.focus_distance - (data.size.z - data.section_height))/data.focus_distance;
-    gview_section->setParameters(data.diameter[0] / ratio, data.septa[0] / ratio);
+    ratio =(collimator.focus_distance - (collimator.size.z - collimator.section_height))/ collimator.focus_distance;
+    gview_section->setParameters(collimator.diameter[0] / ratio, collimator.septa[0] / ratio);
     gview_section->buildHoles();
 
-    data.focus_width = 0;
+	collimator.focus_width = 0;
   }
   // Diverging hole
   else {
     // 1. determine diameters
-    double section_diameter = data.diameter[1]
-      + (data.diameter[0] - data.diameter[1]) / data.size.z * data.section_height;
+    double section_diameter = collimator.diameter[1]
+      + (collimator.diameter[0] - collimator.diameter[1]) / collimator.size.z * collimator.section_height;
 
     // 2. determine delY (distance btw the centers of hexagons)
-    if (data.diameter[0] > data.diameter[1]) {
-      double top_delY = data.diameter[0] + data.septa[0];
-      double bottom_delY = top_delY * data.focus_distance / (data.focus_distance - data.size.z);
-      double section_delY = top_delY * (data.focus_distance - data.section_height)/(data.focus_distance - data.size.z);
-      data.septa[1] = bottom_delY - data.diameter[1];
+    if (collimator.diameter[0] > collimator.diameter[1]) {
+      double top_delY = collimator.diameter[0] + collimator.septa[0];
+      double bottom_delY = top_delY * collimator.focus_distance / (collimator.focus_distance - collimator.size.z);
+      double section_delY = top_delY * (collimator.focus_distance - collimator.section_height)/(collimator.focus_distance - collimator.size.z);
+	  collimator.septa[1] = bottom_delY - collimator.diameter[1];
       double section_septa = section_delY - section_diameter;
 
-      gview_bottom->setParameters(data.diameter[1], data.septa[1]);
+      gview_bottom->setParameters(collimator.diameter[1], collimator.septa[1]);
       gview_bottom->buildHoles();
 
       gview_section->setParameters(section_diameter, section_septa);
       gview_section->buildHoles();
     }
 
-    data.focus_width = data.diameter[1]
-      + (data.diameter[0] - data.diameter[1]) / data.size.z * data.focus_distance;
+	collimator.focus_width = collimator.diameter[1]
+      + (collimator.diameter[0] - collimator.diameter[1]) / collimator.size.z * collimator.focus_distance;
   }
 
-  dockCollimator->update(data);
+  dockCollimator->update(collimator);
+  saveSettings();
 }
 
 void MainWindow::sectionUpdated()
 {
-  Collimator data = dockCollimator->getData();
-  double ratio =(data.focus_distance - data.section_height)/data.focus_distance;
+	collimator = dockCollimator->getData();
+  double ratio =(collimator.focus_distance - collimator.section_height)/ collimator.focus_distance;
   v3 section_size;
-  section_size.x = data.size.x * ratio;
-  section_size.y = data.size.y * ratio;
+  section_size.x = collimator.size.x * ratio;
+  section_size.y = collimator.size.y * ratio;
   gview_section->setCollimatorSize(section_size);
 
-  if (data.direction == Converging) {
+  if (collimator.direction == Converging) {
     // Calculate sectional plane
-    ratio =(data.focus_distance - (data.size.z - data.section_height))/data.focus_distance;
-    gview_section->setParameters(data.diameter[0] / ratio, data.septa[0] / ratio);
+    ratio =(collimator.focus_distance - (collimator.size.z - collimator.section_height))/ collimator.focus_distance;
+    gview_section->setParameters(collimator.diameter[0] / ratio, collimator.septa[0] / ratio);
     gview_section->buildHoles();
   }
   // Diverging hole
   else {
     // 1. determine diameters
-    double section_diameter = data.diameter[1]
-      + (data.diameter[0] - data.diameter[1]) / data.size.z * data.section_height;
+    double section_diameter = collimator.diameter[1]
+      + (collimator.diameter[0] - collimator.diameter[1]) / collimator.size.z * collimator.section_height;
 
     // 2. determine delY (distance btw the centers of hexagons)
-    if (data.diameter[0] > data.diameter[1]) {
-      double top_delY = data.diameter[0] + data.septa[0];
-      double section_delY = top_delY * (data.focus_distance - data.section_height)/(data.focus_distance - data.size.z);
+    if (collimator.diameter[0] > collimator.diameter[1]) {
+      double top_delY = collimator.diameter[0] + collimator.septa[0];
+      double section_delY = top_delY * (collimator.focus_distance - collimator.section_height)/(collimator.focus_distance - collimator.size.z);
       double section_septa = section_delY - section_diameter;
 
       gview_section->setParameters(section_diameter, section_septa);
