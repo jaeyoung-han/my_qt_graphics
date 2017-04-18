@@ -33,16 +33,22 @@ namespace LCR {
 
 
 	// Draw upper hole
+	QGraphicsLineItem* top_hole;
 
 	// Draw lower hole
+	QGraphicsLineItem* bottom_hole;
 
 	// Draw umbra lines
 	QGraphicsLineItem* umbra_line_l;
 	QGraphicsLineItem* umbra_line_r;
 
 	// Draw penumbra lines
-	QGraphicsLineItem* peumbra_line_l;
-	QGraphicsLineItem* peumbra_line_r;
+	QGraphicsLineItem* penumbra_line_l;
+	QGraphicsLineItem* penumbra_line_r;
+
+	QGraphicsEllipseItem* middle_circle;
+	QGraphicsEllipseItem* umbra_circle;
+	QGraphicsEllipseItem* penumbra_circle;
   };
 
 };

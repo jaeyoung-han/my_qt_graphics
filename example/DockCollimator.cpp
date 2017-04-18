@@ -3,28 +3,29 @@
 
 using namespace LCR;
 
+
 DockCollimator::DockCollimator(const QString& title, QWidget* parent, Qt::WindowFlags flags)
   : QDockWidget(title, parent, flags)
 {
   initialize();
 
-  data.size.x = 30;
-  data.size.y = 30;
-  data.size.z = 100;
+  //data.size.x = 30;
+  //data.size.y = 30;
+  //data.size.z = 100;
 
-  data.focus_distance = 500;
-  direction = Converging;
+  //data.focus_distance = 500;
+  //direction = Converging;
 
-  data.diameter[0] = 2.0;
-  data.diameter[1] = 2.5;
-  data.septa[0] = 0.2;
-  data.septa[1] = 0.25;
-  data.section_height = 50;
-  data.focus_width = 0;
+  //data.diameter[0] = 2.0;
+  //data.diameter[1] = 2.5;
+  //data.septa[0] = 0.2;
+  //data.septa[1] = 0.25;
+  //data.section_height = 50;
+  //data.focus_width = 0;
 
-  update(data);
+  //update(data);
 
-  updateUi();
+  //updateUi();
 }
 
 QLabel* newLabel(const QString& text, QWidget* parent = 0)
@@ -157,6 +158,10 @@ void DockCollimator::initialize()
   grid_sec->addWidget(newLabel(tr("Width at Focus (mm): ")), 1, 0);
   grid_sec->addWidget(lb_focus_width, 1, 1);
 
+
+  test = new DoubleSpinBoxSliderWidget("TEST: ", 1000, 0.4, 10);
+
+
   QScrollArea* sc = new QScrollArea();
   QVBoxLayout* vbLayout = new QVBoxLayout(sc);
 
@@ -166,6 +171,7 @@ void DockCollimator::initialize()
   vbLayout->addWidget(gb_ex);
   vbLayout->addWidget(gb_en);
   vbLayout->addLayout(grid_sec);
+  vbLayout->addWidget(test);
   vbLayout->addStretch();
 
   connect(dsb_length, SIGNAL(valueChanged(double)), this, SLOT(sizeUpdated()));
@@ -188,9 +194,9 @@ void DockCollimator::initialize()
   setWidget(sc);
 }
 
-void DockCollimator::update(const Collimator& data)
+void DockCollimator::update(const Collimator& new_data)
 {
-  this->data = data;
+  this->data = new_data;
   dsb_length->setValue(data.size.x);
   dsb_width->setValue(data.size.y);
   dsb_height->setValue(data.size.z);

@@ -2,6 +2,7 @@
 #include <QSettings>
 #include "mainwindow.h"
 
+#include "graphics_view_zoom.h"
 #include "graphicsarrowitem.h"
 #include "DockCollimator.h"
 
@@ -14,6 +15,8 @@ MainWindow::MainWindow()
   gview_top = new CollimatorSectionalView();
   gview_top->setOrigin(200, 200);
   gview_top->setScale(10);
+  Graphics_view_zoom* zt = new Graphics_view_zoom(gview_top);
+  zt->set_modifiers(Qt::NoModifier);
 
   gview_section = new CollimatorSectionalView();
   gview_section->setOrigin(200, 200);
@@ -33,9 +36,10 @@ MainWindow::MainWindow()
 
   // Vertical Sectional View
   gview_umbra = new UmbraView();
-  gview_umbra->setOrigin(200, 200);
-  gview_umbra->setScale(10);
-
+  gview_umbra->setOrigin(200, 500);
+  gview_umbra->setScale(2);
+  Graphics_view_zoom* z = new Graphics_view_zoom(gview_umbra);
+  z->set_modifiers(Qt::NoModifier);
 
   // Main Splitter
   QSplitter* main_splitter = new QSplitter();
@@ -156,6 +160,8 @@ void MainWindow::sizeUpdated()
 void MainWindow::parameterUpdated()
 {
   collimator = dockCollimator->getData();
+
+  gview_umbra->setData(collimator);
 
   gview_top->setParameters(collimator.diameter[0], collimator.septa[0]);
   gview_top->buildHoles();

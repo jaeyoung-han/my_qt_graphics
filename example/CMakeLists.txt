@@ -18,6 +18,7 @@ include_directories(
 
 set(HEADERS
   data_types.h
+  DoubleSpinBoxSliderWidget.h
   DockCollimator.h
   CollimatorSectionalView.h
   UmbraView.h
@@ -25,6 +26,7 @@ set(HEADERS
 )
 
 set(SOURCES
+  DoubleSpinBoxSliderWidget.cpp
   DockCollimator.cpp
   CollimatorSectionalView.cpp
   UmbraView.cpp

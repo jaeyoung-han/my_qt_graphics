@@ -16,12 +16,14 @@ include_directories(
 )
 
 set(HEADERS
+  graphics_view_zoom.h
   graphicshexagonitem.h
   graphicsarrowitem.h
   graphicsview.h
 )
 
 set(SOURCES
+  graphics_view_zoom.cpp
   graphicshexagonitem.cpp
   graphicsarrowitem.cpp
   graphicsview.cpp

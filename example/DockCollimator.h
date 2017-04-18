@@ -3,6 +3,7 @@
 
 #include <QDockWidget>
 #include "data_types.h"
+#include "DoubleSpinBoxSliderWidget.h"
 
 class QDoubleSpinBox;
 class QRadioButton;
@@ -51,6 +52,8 @@ private:
   QLabel* lb_p_side_hole_num;
   QLabel* lb_x_side_hole_num;
   QLabel* lb_focus_width;
+
+  LCR::DoubleSpinBoxSliderWidget* test;
 
   int direction;
 
