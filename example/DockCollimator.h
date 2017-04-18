@@ -19,15 +19,10 @@ public:
   void update(const LCR::Collimator& data);
   const LCR::Collimator& getData() const;
 
-protected:
-  void updateUi();
-
 private slots:
   void sizeUpdated();
   void parameterUpdated();
   void sectionUpdated();
-  void convergentClicked(bool);
-  void divergentClicked(bool);
 
 signals:
   void updateSize();
@@ -38,12 +33,11 @@ private:
   QDoubleSpinBox* dsb_length;
   QDoubleSpinBox* dsb_width;
   QDoubleSpinBox* dsb_height;
-
   QDoubleSpinBox* dsb_focus;
-  QRadioButton* rb_direction[2];
 
-  QDoubleSpinBox* dsb_diameter[2];
-  QDoubleSpinBox* dsb_septa[2];
+  LCR::DoubleSpinBoxSliderWidget* dsb_diameter[2];
+  LCR::DoubleSpinBoxSliderWidget* dsb_septa1;
+  QDoubleSpinBox* dsb_septa2;
 
   QDoubleSpinBox* dsb_section_height;
 
@@ -52,10 +46,6 @@ private:
   QLabel* lb_p_side_hole_num;
   QLabel* lb_x_side_hole_num;
   QLabel* lb_focus_width;
-
-  LCR::DoubleSpinBoxSliderWidget* test;
-
-  int direction;
 
   LCR::Collimator data;
 };

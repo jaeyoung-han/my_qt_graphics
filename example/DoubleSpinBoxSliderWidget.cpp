@@ -7,7 +7,7 @@
 
 using namespace LCR;
 
-DoubleSpinBoxSliderWidget::DoubleSpinBoxSliderWidget(const QString& label, int slider_range, double min, double max) 
+DoubleSpinBoxSliderWidget::DoubleSpinBoxSliderWidget(const QString& label, int slider_range, double min, double max)
 {
 	initialize();
 
@@ -16,25 +16,25 @@ DoubleSpinBoxSliderWidget::DoubleSpinBoxSliderWidget(const QString& label, int s
 	_spinBox->setRange(min, max);
 }
 
-void DoubleSpinBoxSliderWidget::setSliderRange(int min, int max) 
+void DoubleSpinBoxSliderWidget::setSliderRange(int min, int max)
 {
 	_slider->setRange(min, max);
 	changeSlider(_spinBox->value());
 }
 
-void DoubleSpinBoxSliderWidget::setRange(double min, double max) 
+void DoubleSpinBoxSliderWidget::setRange(double min, double max)
 {
 	_spinBox->setRange(min, max);
 	changeSlider(_spinBox->value());
 }
 
-void DoubleSpinBoxSliderWidget::setValue(double value) 
+void DoubleSpinBoxSliderWidget::setValue(double value)
 {
 	_spinBox->setValue(value);
 	_slider->setValue(convertSpinBoxValueToSlider(value));
 }
 
-void DoubleSpinBoxSliderWidget::setText(const QString& text) 
+void DoubleSpinBoxSliderWidget::setText(const QString& text)
 {
 	_label->setText(text);
 }
@@ -45,7 +45,7 @@ double DoubleSpinBoxSliderWidget::value() const
 }
 
 
-void DoubleSpinBoxSliderWidget::changeSpinBox(int sliderValue) 
+void DoubleSpinBoxSliderWidget::changeSpinBox(int sliderValue)
 {
 	if (convertSpinBoxValueToSlider(_spinBox->value()) != sliderValue) {
 		_spinBox->setValue(convertSliderValueToSpinBox(sliderValue));
@@ -53,28 +53,31 @@ void DoubleSpinBoxSliderWidget::changeSpinBox(int sliderValue)
 	}
 }
 
-void DoubleSpinBoxSliderWidget::changeSlider(double spinBoxValue) 
+void DoubleSpinBoxSliderWidget::changeSlider(double spinBoxValue)
 {
 	_slider->setValue(convertSpinBoxValueToSlider(spinBoxValue));
 }
 
-double DoubleSpinBoxSliderWidget::convertSliderValueToSpinBox(int value) 
+double DoubleSpinBoxSliderWidget::convertSliderValueToSpinBox(int value)
 {
 	return (_spinBox->maximum() - _spinBox->minimum()) / (_slider->maximum() - _slider->minimum()) * (value - _slider->minimum()) + _spinBox->minimum();
 }
 
-int DoubleSpinBoxSliderWidget::convertSpinBoxValueToSlider(double value) 
+int DoubleSpinBoxSliderWidget::convertSpinBoxValueToSlider(double value)
 {
 	return qRound(
 		(_slider->maximum() - _slider->minimum()) / (_spinBox->maximum() - _spinBox->minimum()) * (value - _spinBox->minimum()) + _slider->minimum()
 	);
 }
 
-void DoubleSpinBoxSliderWidget::initialize() 
+void DoubleSpinBoxSliderWidget::initialize()
 {
 	_label = new QLabel(this);
 	_slider = new QSlider(Qt::Horizontal, this);
 	_spinBox = new QDoubleSpinBox(this);
+
+	_slider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
+
 
 	QHBoxLayout *layout = new QHBoxLayout;
 	layout->addWidget(_label);

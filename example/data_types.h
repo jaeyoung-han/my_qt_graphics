@@ -16,7 +16,6 @@ namespace LCR {
   struct Collimator {
     v3 size;
     double focus_distance;
-    int direction;
     double diameter[2];
     double septa[2];
     double section_height;
