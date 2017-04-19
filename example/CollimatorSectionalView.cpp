@@ -51,6 +51,8 @@ void CollimatorSectionalView::buildHoles()
     for (size_t i = 0; i < hex_list.size(); ++i) {
       scene()->removeItem(hex_list[i]);
     }
+
+	hex_group = Q_NULLPTR;
   }
 
   if (diameter > 0) {

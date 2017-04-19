@@ -18,6 +18,7 @@ include_directories(
 
 set(HEADERS
   data_types.h
+  qUtil.h
   DoubleSpinBoxSliderWidget.h
   DockCollimator.h
   CollimatorSectionalView.h

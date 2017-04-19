@@ -30,6 +30,10 @@ protected:
   void createMenus();
   void createStatusBar();
   void createDocks();
+  void createConnections();
+  void closeEvent(QCloseEvent* event);
+
+  void updateUmbra();
 
 private:
   QMenu* menu_file;
@@ -46,7 +50,7 @@ private:
 
   DockCollimator* dockCollimator;
 
-  LCR::Collimator collimator;
+  LCR::CollimatorEx collimator;
 };
 
 #endif // __EXAMPLE_MAINWINDOW_H__

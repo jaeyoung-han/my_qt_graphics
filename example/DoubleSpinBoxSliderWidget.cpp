@@ -25,7 +25,19 @@ void DoubleSpinBoxSliderWidget::setSliderRange(int min, int max)
 void DoubleSpinBoxSliderWidget::setRange(double min, double max)
 {
 	_spinBox->setRange(min, max);
+	_slider->setRange(0, (int)((_spinBox->maximum() - _spinBox->minimum()) / _spinBox->singleStep()));
 	changeSlider(_spinBox->value());
+}
+
+void DoubleSpinBoxSliderWidget::setDecimals(int prec)
+{
+	_spinBox->setDecimals(prec);
+}
+
+void DoubleSpinBoxSliderWidget::setSingleStep(double val)
+{
+	_spinBox->setSingleStep(val);
+	_slider->setRange(0, (int)((_spinBox->maximum() - _spinBox->minimum()) / val));
 }
 
 void DoubleSpinBoxSliderWidget::setValue(double value)
@@ -76,10 +88,12 @@ void DoubleSpinBoxSliderWidget::initialize()
 	_slider = new QSlider(Qt::Horizontal, this);
 	_spinBox = new QDoubleSpinBox(this);
 
+	_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 	_slider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
-
+	_spinBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 
 	QHBoxLayout *layout = new QHBoxLayout;
+	layout->setContentsMargins(0, 0, 0, 0);
 	layout->addWidget(_label);
 	layout->addWidget(_slider);
 	layout->addWidget(_spinBox);

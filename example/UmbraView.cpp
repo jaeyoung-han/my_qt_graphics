@@ -1,5 +1,7 @@
 #include <QtMath>
 #include <QGraphicsPolygonItem>
+
+#include "qUtil.h"
 #include "UmbraView.h"
 
 using namespace LCR;
@@ -80,15 +82,6 @@ void UmbraView::setData(const Collimator& newData)
 	update();
 }
 
-static inline qreal getX(qreal y, const QPointF& p1, const QPointF& p2)
-{
-	return (p1.x() - p2.x()) / (p1.y() - p2.y()) * (y - p2.y()) + p2.x();
-}
-
-static inline qreal getY(qreal x, const QPointF& p1, const QPointF& p2)
-{
-	return (p1.y() - p2.y()) / (p1.x() - p2.x()) * (x - p2.x()) + p2.y();
-}
 
 void UmbraView::update()
 {
