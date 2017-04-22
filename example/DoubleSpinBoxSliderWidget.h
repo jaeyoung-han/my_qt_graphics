@@ -15,6 +15,7 @@ namespace LCR {
 	public:
 		DoubleSpinBoxSliderWidget(const QString& label, int slider_range, double min, double max);
 
+		void setItemMinimumWidth(int label, int slider, int spinbox);
 		void setSliderRange(int min, int max);
 		void setRange(double min, double max);
 		void setDecimals(int prec);

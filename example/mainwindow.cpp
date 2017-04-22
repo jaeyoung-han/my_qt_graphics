@@ -14,17 +14,15 @@ using namespace LCR;
 MainWindow::MainWindow()
 {
 	// Horizontal Sectional View
-	gview_top = new CollimatorSectionalView();
+	gview_top = new CollimatorHorizontalSectionView();
 	gview_top->setOrigin(200, 200);
 	gview_top->setScale(10);
-	Graphics_view_zoom* zt = new Graphics_view_zoom(gview_top);
-	zt->set_modifiers(Qt::NoModifier);
 
-	gview_section = new CollimatorSectionalView();
+	gview_section = new CollimatorHorizontalSectionView();
 	gview_section->setOrigin(200, 200);
 	gview_section->setScale(10);
 
-	gview_bottom = new CollimatorSectionalView();
+	gview_bottom = new CollimatorHorizontalSectionView();
 	gview_bottom->setOrigin(200, 200);
 	gview_bottom->setScale(10);
 
@@ -40,8 +38,6 @@ MainWindow::MainWindow()
 	gview_umbra = new UmbraView();
 	gview_umbra->setOrigin(200, 500);
 	gview_umbra->setScale(2);
-	Graphics_view_zoom* z = new Graphics_view_zoom(gview_umbra);
-	z->set_modifiers(Qt::NoModifier);
 
 	// Main Splitter
 	QSplitter* main_splitter = new QSplitter();
@@ -55,6 +51,7 @@ MainWindow::MainWindow()
 	setCentralWidget(main_splitter);
 
 	loadSettings();
+	collimator.section_height = 0;
 
 	createActions();
 	createMenus();
@@ -62,7 +59,11 @@ MainWindow::MainWindow()
 	createDocks();
 	createConnections();
 
-	collimator.section_height = 0;
+	QSettings settings;
+	restoreGeometry(settings.value("geometry").toByteArray());
+	dockCollimator->restoreGeometry(settings.value("dockCollimator/geometry").toByteArray());
+	restoreState(settings.value("state").toByteArray());
+
 	parameterUpdated();
 }
 
@@ -111,6 +112,11 @@ void MainWindow::createConnections()
 void MainWindow::closeEvent(QCloseEvent* event)
 {
 	saveSettings();
+
+	QSettings settings;
+	settings.setValue("geometry", saveGeometry());
+	settings.setValue("dockCollimator/geometry", dockCollimator->saveGeometry());
+	settings.setValue("state", saveState());
 
 	QMainWindow::closeEvent(event);
 }

@@ -13,6 +13,7 @@ namespace MQGAPI {
     GraphicsView(QWidget *parent = Q_NULLPTR);
     virtual ~GraphicsView();
 
+	void setAxisVisible(bool on);
     void setOrigin(const QPointF& center);
     void setOrigin(qreal x, qreal y);
     void setScale(qreal scale_factor);

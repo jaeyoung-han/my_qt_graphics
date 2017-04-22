@@ -10,7 +10,6 @@ namespace MQGAPI {
   {
   public:
     GraphicsHexagonItem(qreal diameter, qreal angle = 0, QGraphicsItem *parent = Q_NULLPTR);
-
   protected:
     void buildVertices(qreal diameter, qreal angle);
 

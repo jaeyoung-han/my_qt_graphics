@@ -2,7 +2,8 @@
 #define __EXAMPLE_MAINWINDOW_H__
 
 #include <QMainWindow>
-#include "CollimatorSectionalView.h"
+#include "CollimatorHorizontalSectionView.h"
+#include "CollimatorVerticalSectionView.h"
 #include "UmbraView.h"
 
 using namespace MQGAPI;
@@ -43,9 +44,10 @@ private:
   QAction* act_about;
   QAction* act_quit;
 
-  LCR::CollimatorSectionalView* gview_top;
-  LCR::CollimatorSectionalView* gview_section;
-  LCR::CollimatorSectionalView* gview_bottom;
+  LCR::CollimatorHorizontalSectionView* gview_top;
+  LCR::CollimatorHorizontalSectionView* gview_section;
+  LCR::CollimatorHorizontalSectionView* gview_bottom;
+  LCR::CollimatorVerticalSectionView* gview_vertical;
   LCR::UmbraView* gview_umbra;
 
   DockCollimator* dockCollimator;

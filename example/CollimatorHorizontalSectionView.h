@@ -1,5 +1,5 @@
-#ifndef __COLLIMATOR_SECTIONAL_VIEW_H__
-#define __COLLIMATOR_SECTIONAL_VIEW_H__
+#ifndef __COLLIMATOR_HORIZONTAL_SECTION_VIEW_H__
+#define __COLLIMATOR_HORIZONTAL_SECTION_VIEW_H__
 
 #include <QList>
 #include "graphicsview.h"
@@ -10,12 +10,12 @@ class QGraphicsItemGroup;
 
 namespace LCR {
 
-  class CollimatorSectionalView : public MQGAPI::GraphicsView
+  class CollimatorHorizontalSectionView : public MQGAPI::GraphicsView
   {
     Q_OBJECT
   public:
-    CollimatorSectionalView(double ins_diameter = 0, double _septa = 0, QWidget *parent = Q_NULLPTR);
-    virtual ~CollimatorSectionalView();
+	  CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, QWidget *parent = Q_NULLPTR);
+    virtual ~CollimatorHorizontalSectionView();
 
     void setCollimatorSize(const v3& coll_size);
     void setParameters(double diameter, double septa);
@@ -38,4 +38,4 @@ namespace LCR {
 
 };
 
-#endif // __COLLIMATOR_SECTIONAL_VIEW_H__
+#endif // __COLLIMATOR_HORIZONTAL_SECTION_VIEW_H__

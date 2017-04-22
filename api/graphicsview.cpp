@@ -48,6 +48,12 @@ void GraphicsView::resizeEvent(QResizeEvent* event)
   QGraphicsView::resizeEvent(event);
 }
 
+void GraphicsView::setAxisVisible(bool on)
+{
+	x_axis->setVisible(on);
+	y_axis->setVisible(on);
+}
+
 void GraphicsView::setOrigin(qreal x, qreal y)
 {
   origin.setX(x);

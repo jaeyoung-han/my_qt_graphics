@@ -4,6 +4,7 @@
 #include <QDockWidget>
 #include "data_types.h"
 #include "DoubleSpinBoxSliderWidget.h"
+#include "UmbraWidget.h"
 
 class QDoubleSpinBox;
 class QRadioButton;
@@ -20,20 +21,24 @@ public:
 	void update(const LCR::CollimatorEx& data);
 	const LCR::CollimatorEx& getData() const;
 
+
 signals:
 	void updateSize();
 	void updateParameters();
 	void updateSection();
+
+protected:
+	void resizeEvent(QResizeEvent* event);
 
 private slots:
 	void parameterUpdated();
 	void sectionUpdated();
 
 private:
-	QDoubleSpinBox* dsb_length;
-	QDoubleSpinBox* dsb_width;
-	QDoubleSpinBox* dsb_height;
-	QDoubleSpinBox* dsb_focus;
+	LCR::DoubleSpinBoxSliderWidget* dsb_length;
+	LCR::DoubleSpinBoxSliderWidget* dsb_width;
+	LCR::DoubleSpinBoxSliderWidget* dsb_height;
+	LCR::DoubleSpinBoxSliderWidget* dsb_focus;
 
 	LCR::DoubleSpinBoxSliderWidget* dsb_diameter[2];
 	LCR::DoubleSpinBoxSliderWidget* dsb_septa1;
@@ -49,6 +54,8 @@ private:
 	QLabel* lb_umbra;
 	QLabel* lb_mid_penumbra;
 	QLabel* lb_penumbra;
+
+	LCR::UmbraWidget* umbra_widget;
 
 	LCR::CollimatorEx data;
 };

@@ -19,17 +19,21 @@ include_directories(
 set(HEADERS
   data_types.h
   qUtil.h
+  UmbraWidget.h
   DoubleSpinBoxSliderWidget.h
   DockCollimator.h
-  CollimatorSectionalView.h
+  CollimatorHorizontalSectionView.h
+  CollimatorVerticalSectionView.h
   UmbraView.h
   mainwindow.h
 )
 
 set(SOURCES
+  UmbraWidget.cpp
   DoubleSpinBoxSliderWidget.cpp
   DockCollimator.cpp
-  CollimatorSectionalView.cpp
+  CollimatorHorizontalSectionView.cpp
+  CollimatorVerticalSectionView.cpp
   UmbraView.cpp
   mainwindow.cpp
   main.cpp

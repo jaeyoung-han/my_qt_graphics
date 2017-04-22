@@ -16,6 +16,13 @@ DoubleSpinBoxSliderWidget::DoubleSpinBoxSliderWidget(const QString& label, int s
 	_spinBox->setRange(min, max);
 }
 
+void DoubleSpinBoxSliderWidget::setItemMinimumWidth(int label, int slider, int spinbox)
+{
+	_label->setMinimumWidth(label);
+	_slider->setMinimumWidth(slider);
+	_spinBox->setFixedWidth(spinbox);
+}
+
 void DoubleSpinBoxSliderWidget::setSliderRange(int min, int max)
 {
 	_slider->setRange(min, max);
@@ -91,6 +98,13 @@ void DoubleSpinBoxSliderWidget::initialize()
 	_label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
 	_slider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Minimum);
 	_spinBox->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
+
+	_label->setMinimumWidth(100);
+	_slider->setMinimumWidth(128);
+	_spinBox->setFixedWidth(64);
+
+	_label->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+	_spinBox->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
 	QHBoxLayout *layout = new QHBoxLayout;
 	layout->setContentsMargins(0, 0, 0, 0);
