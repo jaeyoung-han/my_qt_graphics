@@ -8,34 +8,53 @@ using namespace MQGAPI;
 
 CollimatorHorizontalSectionView::CollimatorHorizontalSectionView(double ins_diameter, double _septa, int _direction, QWidget *parent)
 	: GraphicsView(parent)
-	, base_rect(Q_NULLPTR)
-	, coll_shape(Q_NULLPTR)
 	, hex_group(Q_NULLPTR)
+	, base_rect(Q_NULLPTR)
 	, diameter(ins_diameter)
 	, septa(_septa)
 	, direction(_direction)
 {
 	setAxisVisible(false);
 	setBackgroundColor(Qt::black);
-	circle = new QGraphicsEllipseItem();
-	circle->setVisible(false);
-	scene()->addItem(circle);
 
 	QPen pen;
 	pen.setColor(Qt::red);
 	pen.setWidth(2);
+
+	QBrush bkbrush(Qt::black);
+
+	circle = new QGraphicsEllipseItem();
+	circle->setVisible(false);
+	circle->setZValue(1);
 	circle->setPen(pen);
 
+	scene()->addItem(circle);
+
+
 	base_rect = new QGraphicsRectItem(0, 0, 1, 1);
+	base_rect->setZValue(0);
 
-	QBrush brush(Qt::lightGray);
-	base_rect->setBrush(brush);
 	scene()->addItem(base_rect);
-}
 
-CollimatorHorizontalSectionView::~CollimatorHorizontalSectionView()
-{
+	outrect_top = new QGraphicsRectItem(0, 0, 1, 1);
+	outrect_bot = new QGraphicsRectItem(0, 0, 1, 1);
+	outrect_left = new QGraphicsRectItem(0, 0, 1, 1);
+	outrect_right = new QGraphicsRectItem(0, 0, 1, 1);
 
+	outrect_top->setBrush(bkbrush);
+	outrect_bot->setBrush(bkbrush);
+	outrect_left->setBrush(bkbrush);
+	outrect_right->setBrush(bkbrush);
+
+	outrect_top->setZValue(1);
+	outrect_bot->setZValue(1);
+	outrect_left->setZValue(1);
+	outrect_right->setZValue(1);
+
+	scene()->addItem(outrect_top);
+	scene()->addItem(outrect_bot);
+	scene()->addItem(outrect_left);
+	scene()->addItem(outrect_right);
 }
 
 void CollimatorHorizontalSectionView::setCollimatorSize(const v3& coll_size)
@@ -52,28 +71,17 @@ void CollimatorHorizontalSectionView::setParameters(double _diameter, double _se
 
 void CollimatorHorizontalSectionView::updateBase()
 {
-	if (!coll_shape) {
-		coll_shape = new QGraphicsRectItem(0, 0, 1, 1);
-		scene()->addItem(coll_shape);
-	}
-	else {
-		scene()->removeItem(coll_shape);
-		scene()->addItem(coll_shape);
-	}
-
 	if (septa < 0) {
 		QBrush brush(Qt::white);
-		coll_shape->setBrush(brush);
+		base_rect->setBrush(brush);
 	}
 	else {
-		QBrush brush(Qt::transparent);
-		coll_shape->setBrush(brush);
+		QBrush brush(Qt::lightGray);
+		base_rect->setBrush(brush);
 	}
 
 	base_rect->setRect(size.x * getScale() * -0.5, size.y * getScale() * -0.5, size.x * getScale(), size.y * getScale());
 	base_rect->setPos(realToPixel(0, 0));
-	coll_shape->setRect(size.x * getScale() * -0.5, size.y * getScale() * -0.5, size.x * getScale(), size.y * getScale());
-	coll_shape->setPos(realToPixel(0, 0));
 }
 
 inline int positive_modulo(int i, int n) {
@@ -82,27 +90,24 @@ inline int positive_modulo(int i, int n) {
 
 void CollimatorHorizontalSectionView::buildHoles()
 {
-	scene()->removeItem(circle);
-
 	if (hex_group) {
 		scene()->destroyItemGroup(hex_group);
 
-		for (size_t i = 0; i < hex_list.size(); ++i) {
+		for (int i = 0; i < hex_list.size(); ++i) {
 			scene()->removeItem(hex_list[i]);
 		}
 
 		hex_group = Q_NULLPTR;
 	}
 
+	hex_list.clear();
+
 	if (septa < 0) {
-		hex_list.clear();
 		updateBase();
-		scene()->addItem(circle);
 		return;
 	}
 
 	if (diameter > 0) {
-		hex_list.clear();
 
 		if (direction == 0)
 			build_horizontal();
@@ -113,7 +118,7 @@ void CollimatorHorizontalSectionView::buildHoles()
 	}
 
 	updateBase();
-	scene()->addItem(circle);
+	draw_outside();
 }
 
 void CollimatorHorizontalSectionView::drawCircle(double radius)
@@ -127,6 +132,40 @@ void CollimatorHorizontalSectionView::drawCircle(double radius)
 	rect.setBottomRight(realToPixel(br));
 	circle->setRect(rect);
 	circle->setVisible(true);
+}
+
+void CollimatorHorizontalSectionView::draw_outside()
+{
+	QRectF brect = this->base_rect->rect();
+	QRectF rect = brect;
+	QPointF pos = base_rect->pos();
+	qreal pdia = diameter * 2 / sqrt(3) * getScale();
+
+	// Top
+	rect.setWidth(brect.width() + pdia);
+	rect.setHeight(pdia);
+	outrect_top->setRect(rect);
+	outrect_top->setPos(pos - QPointF(0, pdia));
+
+	// Bottom
+	rect.setTop(brect.bottom());
+	rect.setHeight(pdia);
+	outrect_bot->setRect(rect);
+	outrect_bot->setPos(pos - QPointF(pdia, 0));
+
+	// Left
+	rect = brect;
+	rect.setWidth(pdia);
+	rect.setHeight(brect.height() + pdia);
+	outrect_left->setRect(rect);
+	outrect_left->setPos(pos - QPointF(pdia, pdia));
+
+	// Right
+	rect.setLeft(brect.right());
+	rect.setWidth(pdia);
+	rect.setHeight(brect.height() + pdia);
+	outrect_right->setRect(rect);
+	outrect_right->setPos(pos);
 }
 
 void CollimatorHorizontalSectionView::build_horizontal()

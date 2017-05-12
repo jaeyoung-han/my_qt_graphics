@@ -15,7 +15,6 @@ namespace LCR {
 		Q_OBJECT
 	public:
 		CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
-		virtual ~CollimatorHorizontalSectionView();
 
 		void setCollimatorSize(const v3& coll_size);
 		void setParameters(double diameter, double septa, int direction);
@@ -27,12 +26,19 @@ namespace LCR {
 	private:
 		void build_horizontal();
 		void build_vertical();
+		void draw_outside();
 
 	private:
-		QGraphicsRectItem* base_rect;
-		QGraphicsRectItem* coll_shape;
 		QGraphicsItemGroup* hex_group;
 		QList<QGraphicsItem*> hex_list;
+
+		QGraphicsRectItem* base_rect;
+
+		QGraphicsRectItem* outrect_top;
+		QGraphicsRectItem* outrect_bot;
+		QGraphicsRectItem* outrect_left;
+		QGraphicsRectItem* outrect_right;
+
 		QGraphicsEllipseItem* circle;
 
 		double diameter;  // inscribed circle
