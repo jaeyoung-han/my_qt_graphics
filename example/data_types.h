@@ -22,6 +22,7 @@ namespace LCR {
 		double sec_thickness;
 		double umbra_width;
 		double penumbra_width;
+		int direction;	// 0: horizontal, 1: vertical
 	};
 
 };

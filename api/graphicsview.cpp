@@ -6,6 +6,7 @@
 #include "graphicsarrowitem.h"
 
 using namespace MQGAPI;
+
 GraphicsView::GraphicsView(QWidget *parent)
   : QGraphicsView(parent)
   , origin(0, 0)
@@ -14,6 +15,7 @@ GraphicsView::GraphicsView(QWidget *parent)
   , y_axis(Q_NULLPTR)
 {
   initialize();
+  setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 }
 
 GraphicsView::~GraphicsView()
@@ -79,6 +81,12 @@ const QPointF& GraphicsView::getOrigin() const
   return origin;
 }
 
+void GraphicsView::setBackgroundColor(const QColor& color)
+{
+	QBrush brush(color, Qt::SolidPattern);
+	scene()->setBackgroundBrush(brush);
+}
+
 void GraphicsView::initialize()
 {
   this->setScene(new QGraphicsScene(this));
@@ -106,4 +114,10 @@ void GraphicsView::resetAxis()
   else {
       y_axis->setLine(origin.x(), H, origin.x(), 0);
   }
+}
+
+void GraphicsView::save(const QString& filename)
+{
+	QPixmap pixmap(this->grab());
+	pixmap.save(filename);
 }

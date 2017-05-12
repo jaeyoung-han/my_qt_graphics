@@ -9,6 +9,7 @@
 class QDoubleSpinBox;
 class QRadioButton;
 class QLabel;
+class QCheckBox;
 
 class DockCollimator : public QDockWidget
 {
@@ -35,6 +36,9 @@ private slots:
 	void sectionUpdated();
 
 private:
+	QRadioButton* rb_horizontal;
+	QRadioButton* rb_vertical;
+
 	LCR::DoubleSpinBoxSliderWidget* dsb_length;
 	LCR::DoubleSpinBoxSliderWidget* dsb_width;
 	LCR::DoubleSpinBoxSliderWidget* dsb_height;
@@ -42,7 +46,9 @@ private:
 
 	LCR::DoubleSpinBoxSliderWidget* dsb_diameter[2];
 	LCR::DoubleSpinBoxSliderWidget* dsb_septa1;
+
 	QLabel* dsb_septa2;
+	QCheckBox* cb_conv_div_mix;
 
 	LCR::DoubleSpinBoxSliderWidget* dsb_section_height;
 	QLabel* lb_sec_diameter;

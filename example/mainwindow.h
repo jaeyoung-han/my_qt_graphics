@@ -14,45 +14,47 @@ class DockCollimator;
 
 class MainWindow : public QMainWindow
 {
-  Q_OBJECT
+	Q_OBJECT
 public:
-  MainWindow();
+	MainWindow();
 
 private slots:
-  void about();
-  void sizeUpdated();
-  void parameterUpdated();
-  void sectionUpdated();
-  void loadSettings();
-  void saveSettings();
+	void save();
+	void about();
+	void sizeUpdated();
+	void parameterUpdated();
+	void sectionUpdated();
+	void loadSettings();
+	void saveSettings();
 
 protected:
-  void createActions();
-  void createMenus();
-  void createStatusBar();
-  void createDocks();
-  void createConnections();
-  void closeEvent(QCloseEvent* event);
+	void createActions();
+	void createMenus();
+	void createStatusBar();
+	void createDocks();
+	void createConnections();
+	void closeEvent(QCloseEvent* event);
 
-  void updateUmbra();
+	void updateUmbra();
 
 private:
-  QMenu* menu_file;
-  QMenu* menu_view;
-  QMenu* menu_help;
+	QMenu* menu_file;
+	QMenu* menu_view;
+	QMenu* menu_help;
 
-  QAction* act_about;
-  QAction* act_quit;
+	QAction* act_save;
+	QAction* act_about;
+	QAction* act_quit;
 
-  LCR::CollimatorHorizontalSectionView* gview_top;
-  LCR::CollimatorHorizontalSectionView* gview_section;
-  LCR::CollimatorHorizontalSectionView* gview_bottom;
-  LCR::CollimatorVerticalSectionView* gview_vertical;
-  LCR::UmbraView* gview_umbra;
+	LCR::CollimatorHorizontalSectionView* gview_top;
+	LCR::CollimatorHorizontalSectionView* gview_section;
+	LCR::CollimatorHorizontalSectionView* gview_bottom;
+	LCR::CollimatorVerticalSectionView* gview_vertical;
+	LCR::UmbraView* gview_umbra;
 
-  DockCollimator* dockCollimator;
+	DockCollimator* dockCollimator;
 
-  LCR::CollimatorEx collimator;
+	LCR::CollimatorEx collimator;
 };
 
 #endif // __EXAMPLE_MAINWINDOW_H__

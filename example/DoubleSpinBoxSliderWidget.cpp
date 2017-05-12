@@ -63,7 +63,6 @@ double DoubleSpinBoxSliderWidget::value() const
 	return _spinBox->value();
 }
 
-
 void DoubleSpinBoxSliderWidget::changeSpinBox(int sliderValue)
 {
 	if (convertSpinBoxValueToSlider(_spinBox->value()) != sliderValue) {

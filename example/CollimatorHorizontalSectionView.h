@@ -10,31 +10,37 @@ class QGraphicsItemGroup;
 
 namespace LCR {
 
-  class CollimatorHorizontalSectionView : public MQGAPI::GraphicsView
-  {
-    Q_OBJECT
-  public:
-	  CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, QWidget *parent = Q_NULLPTR);
-    virtual ~CollimatorHorizontalSectionView();
+	class CollimatorHorizontalSectionView : public MQGAPI::GraphicsView
+	{
+		Q_OBJECT
+	public:
+		CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
+		virtual ~CollimatorHorizontalSectionView();
 
-    void setCollimatorSize(const v3& coll_size);
-    void setParameters(double diameter, double septa);
+		void setCollimatorSize(const v3& coll_size);
+		void setParameters(double diameter, double septa, int direction);
 
-    void buildHoles();
-    void updateBase();
-    void updateHoles();
+		void buildHoles();
+		void updateBase();
+		void drawCircle(double radius);
 
-  private:
-    QGraphicsRectItem* base_item;
-    QGraphicsItemGroup* hex_group;
-    QList<QGraphicsItem*> hex_list;
+	private:
+		void build_horizontal();
+		void build_vertical();
 
+	private:
+		QGraphicsRectItem* base_rect;
+		QGraphicsRectItem* coll_shape;
+		QGraphicsItemGroup* hex_group;
+		QList<QGraphicsItem*> hex_list;
+		QGraphicsEllipseItem* circle;
 
-    double diameter;  // inscribed circle
-    double septa;
+		double diameter;  // inscribed circle
+		double septa;
+		int direction;
 
-    v3 size;
-  };
+		v3 size;
+	};
 
 };
 

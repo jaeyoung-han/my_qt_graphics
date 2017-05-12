@@ -8,7 +8,15 @@ using namespace LCR;
 using namespace MQGAPI;
 
 UmbraView::UmbraView(QWidget *parent)
-  : GraphicsView(parent)
+	: GraphicsView(parent)
+{
+	setScale(30);
+	setAxisVisible(false);
+	initialize();
+	//initialize2();
+}
+
+void UmbraView::initialize()
 {
 	const QColor rcolor(255, 0, 0);
 	const QColor bcolor(0, 0, 255);
@@ -69,7 +77,32 @@ UmbraView::UmbraView(QWidget *parent)
 
 	scene()->addItem(umbra_line_l);
 	scene()->addItem(umbra_line_r);
+}
 
+void UmbraView::initialize2()
+{
+	QPen pen(Qt::darkGray, Qt::SolidPattern);
+	QBrush brush(Qt::white, Qt::SolidPattern);
+
+	setBackgroundColor(Qt::lightGray);
+
+	block1 = new QGraphicsPolygonItem();
+	block1->setPen(pen);
+	block1->setBrush(brush);
+	block2 = new QGraphicsPolygonItem();
+	block2->setPen(pen);
+	block2->setBrush(brush);
+	block3 = new QGraphicsPolygonItem();
+	block3->setPen(pen);
+	block3->setBrush(brush);
+	block4 = new QGraphicsPolygonItem();
+	block4->setPen(pen);
+	block4->setBrush(brush);
+
+	scene()->addItem(block1);
+	scene()->addItem(block2);
+	scene()->addItem(block3);
+	scene()->addItem(block4);
 }
 
 UmbraView::~UmbraView()
@@ -85,10 +118,16 @@ void UmbraView::setData(const Collimator& newData)
 
 void UmbraView::update()
 {
+	drawVerticalUmbra();
+	//drawVerticalSection();
+}
+
+void UmbraView::drawVerticalUmbra()
+{
 	QPointF tl(data.diameter[0] * -0.5, data.size.z);
-	QPointF tr(data.diameter[0] *  0.5, data.size.z);
+	QPointF tr(data.diameter[0] * 0.5, data.size.z);
 	QPointF bl(data.diameter[1] * -0.5, 0);
-	QPointF br(data.diameter[1] *  0.5, 0);
+	QPointF br(data.diameter[1] * 0.5, 0);
 
 	QRectF rect;
 	QLineF line;
@@ -143,4 +182,48 @@ void UmbraView::update()
 	umbra_line_l->setLine(line);
 	line.setPoints(realToPixel(br), realToPixel(ur));
 	umbra_line_r->setLine(line);
+}
+
+QPolygonF UmbraView::buildPolygon(const QPointF& top_center, qreal top_diameter, const QPointF& bot_center, qreal bot_diameter)
+{
+	// block center
+	QPointF tl(top_center.x() + top_diameter * -0.5, top_center.y());
+	QPointF tr(top_center.x() + top_diameter *  0.5, top_center.y());
+	QPointF bl(bot_center.x() + bot_diameter * -0.5, bot_center.y());
+	QPointF br(bot_center.x() + bot_diameter *  0.5, bot_center.y());
+
+	QPolygonF polygon;
+	polygon.push_back(realToPixel(tl));
+	polygon.push_back(realToPixel(tr));
+	polygon.push_back(realToPixel(br));
+	polygon.push_back(realToPixel(bl));
+
+	return polygon;
+}
+
+void UmbraView::drawVerticalSection()
+{
+	// block center
+	QPointF t_center(0, data.size.z);
+	QPointF b_center(0, 0);
+
+	QPolygonF polygon = buildPolygon(t_center, data.diameter[0], b_center, data.diameter[1]);
+
+	block1->setPolygon(polygon);
+
+	// block right
+	t_center.setX(data.diameter[0] + data.septa[0]);
+	b_center.setX(data.diameter[1] + data.septa[1]);
+
+	polygon = buildPolygon(t_center, data.diameter[0], b_center, data.diameter[1]);
+
+	block2->setPolygon(polygon);
+
+	// block left
+	t_center.setX((data.diameter[0] + data.septa[0]) * -1.0);
+	b_center.setX((data.diameter[1] + data.septa[1]) * -1.0);
+
+	polygon = buildPolygon(t_center, data.diameter[0], b_center, data.diameter[1]);
+
+	block3->setPolygon(polygon);
 }

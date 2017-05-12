@@ -24,7 +24,6 @@ namespace LCR {
 		void setText(const QString& text);
 		double value() const;
 
-
 	signals:
 		void valueChanged(double value);
 

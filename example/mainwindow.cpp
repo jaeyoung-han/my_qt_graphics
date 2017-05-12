@@ -25,6 +25,7 @@ MainWindow::MainWindow()
 	gview_bottom = new CollimatorHorizontalSectionView();
 	gview_bottom->setOrigin(200, 200);
 	gview_bottom->setScale(10);
+	gview_bottom->drawCircle(5);
 
 	// H-Section Splitter
 	QSplitter* splitter = new QSplitter();
@@ -69,6 +70,12 @@ MainWindow::MainWindow()
 
 void MainWindow::createActions()
 {
+	act_save = new QAction(tr("&Save"), this);
+	act_save->setShortcuts(QKeySequence::Save);
+	act_save->setStatusTip(tr("Save"));
+	connect(act_save, SIGNAL(triggered()), this, SLOT(save()));
+
+
 	act_quit = new QAction(tr("&Quit"), this);
 	act_quit->setShortcuts(QKeySequence::Quit);
 	act_quit->setStatusTip(tr("Quit the application"));
@@ -82,6 +89,7 @@ void MainWindow::createActions()
 void MainWindow::createMenus()
 {
 	menu_file = menuBar()->addMenu(tr("&File"));
+	menu_file->addAction(act_save);
 	menu_file->addAction(act_quit);
 
 	menu_view = menuBar()->addMenu(tr("&View"));
@@ -124,6 +132,8 @@ void MainWindow::closeEvent(QCloseEvent* event)
 void MainWindow::loadSettings()
 {
 	QSettings settings;
+
+	collimator.direction = settings.value("HEXAGON_HORIZONTAL", 0).toInt();
 	collimator.diameter[0] = settings.value("DIAMETER_PATIENT_SIDE", 2.0).toDouble();
 	collimator.diameter[1] = settings.value("DIAMETER_X-RAY_SIDE", 2.5).toDouble();
 	collimator.septa[0] = settings.value("SEPTA_PATIENT_SIDE", 0.3).toDouble();
@@ -138,6 +148,7 @@ void MainWindow::saveSettings()
 {
 	QSettings settings;
 
+	settings.setValue("HEXAGON_HORIZONTAL", collimator.direction);
 	settings.setValue("DIAMETER_PATIENT_SIDE", collimator.diameter[0]);
 	settings.setValue("DIAMETER_X-RAY_SIDE", collimator.diameter[1]);
 	settings.setValue("SEPTA_PATIENT_SIDE", collimator.septa[0]);
@@ -174,7 +185,7 @@ void MainWindow::parameterUpdated()
 
 	gview_umbra->setData(collimator);
 
-	gview_top->setParameters(collimator.diameter[0], collimator.septa[0]);
+	gview_top->setParameters(collimator.diameter[0], collimator.septa[0], collimator.direction);
 	gview_top->buildHoles();
 
 	// 1. determine diameters
@@ -188,10 +199,10 @@ void MainWindow::parameterUpdated()
 	collimator.septa[1] = bottom_delY - collimator.diameter[1];
 	double section_septa = section_delY - section_diameter;
 
-	gview_bottom->setParameters(collimator.diameter[1], collimator.septa[1]);
+	gview_bottom->setParameters(collimator.diameter[1], collimator.septa[1], collimator.direction);
 	gview_bottom->buildHoles();
 
-	gview_section->setParameters(section_diameter, section_septa);
+	gview_section->setParameters(section_diameter, section_septa, collimator.direction);
 	gview_section->buildHoles();
 
 	collimator.sec_diameter = section_diameter;
@@ -220,7 +231,7 @@ void MainWindow::sectionUpdated()
 	double section_delY = top_delY * (collimator.focus_distance - collimator.section_height)/(collimator.focus_distance - collimator.size.z);
 	double section_septa = section_delY - section_diameter;
 
-	gview_section->setParameters(section_diameter, section_septa);
+	gview_section->setParameters(section_diameter, section_septa, collimator.direction);
 	gview_section->buildHoles();
 
 	collimator.sec_diameter = section_diameter;
@@ -249,6 +260,33 @@ void MainWindow::updateUmbra()
 
 	collimator.umbra_width = ur.x() - ul.x();
 	collimator.penumbra_width = pr.x() - pl.x();
+}
+
+void MainWindow::save()
+{
+	QSettings setting;
+
+	QString name = QString("%1/D%2-D%3-H%4-F%5")
+		.arg(setting.value("last_dir").toString())
+		.arg(QString::number(collimator.diameter[0], 'f', 2))
+		.arg(QString::number(collimator.diameter[1], 'f', 2))
+		.arg(QString::number(collimator.size.z, 'f', 0))
+		.arg(QString::number(collimator.focus_distance, 'f', 0))
+		;
+
+	QString fileName = QFileDialog::getSaveFileName(this,
+		tr("Save Section"), name,
+		tr("PNG (*.png)"));
+
+	if (!fileName.isEmpty() && !fileName.isNull()) {
+
+		fileName.replace(".png", "");
+		gview_top->save(fileName + tr("-top.png"));
+		gview_bottom->save(fileName + tr("-bot.png"));
+
+		QDir dir(fileName);
+		setting.setValue("last_dir", dir.absolutePath());
+	}
 }
 
 void MainWindow::about()

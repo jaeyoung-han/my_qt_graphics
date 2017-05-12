@@ -13,6 +13,7 @@ UmbraWidget::UmbraWidget()
 	, diameter_penumbra(20)
 {
 	initialize();
+	setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 }
 
 void UmbraWidget::initialize()

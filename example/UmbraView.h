@@ -21,7 +21,15 @@ namespace LCR {
 		}
 
 	private:
+		void initialize();
+		void initialize2();
+
 		void drawCollimator();
+
+		void drawVerticalUmbra();
+		void drawVerticalSection();
+
+		QPolygonF buildPolygon(const QPointF& top_center, qreal top_diameter, const QPointF& bottom_center, qreal bottom_diameter);
 
 		Collimator data;
 
@@ -49,6 +57,11 @@ namespace LCR {
 		QGraphicsEllipseItem* middle_circle;
 		QGraphicsEllipseItem* umbra_circle;
 		QGraphicsEllipseItem* penumbra_circle;
+
+		QGraphicsPolygonItem* block1;
+		QGraphicsPolygonItem* block2;
+		QGraphicsPolygonItem* block3;
+		QGraphicsPolygonItem* block4;
 	};
 
 };

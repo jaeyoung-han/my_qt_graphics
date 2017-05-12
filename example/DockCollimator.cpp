@@ -20,6 +20,8 @@ QLabel* newLabel(const QString& text, int width = 0, QWidget* parent = 0)
 DockCollimator::DockCollimator(const QString& title, QWidget* parent, Qt::WindowFlags flags)
   : QDockWidget(title, parent, flags)
 {
+	data.direction = 0;
+
 	data.size.x = 10;
 	data.size.y = 10;
 	data.size.z = 100;
@@ -54,6 +56,17 @@ void DockCollimator::initialize()
 	int w_slider = 108;
 	int w_spinbox = 64;
 
+	rb_horizontal = new QRadioButton(tr("Horizontal"));
+	rb_horizontal->setChecked(true);
+	rb_vertical = new QRadioButton(tr("Vertical"));
+
+	QHBoxLayout* hb_dir = new QHBoxLayout();
+	hb_dir->addWidget(rb_horizontal);
+	hb_dir->addWidget(rb_vertical);
+
+	QGroupBox* gb_dir = new QGroupBox(tr("Hexagon Direction"));
+	gb_dir->setLayout(hb_dir);
+
 	// Overall size (L, W, H), focus
 	dsb_length = new DoubleSpinBoxSliderWidget(tr("Lengh (mm): "), 100, 10, 1000);
 	dsb_length->setDecimals(0);
@@ -69,13 +82,13 @@ void DockCollimator::initialize()
 
 	dsb_height = new DoubleSpinBoxSliderWidget(tr("Height (mm): "), 100, 10, 400);
 	dsb_height->setDecimals(0);
-	dsb_height->setSingleStep(5);
+	dsb_height->setSingleStep(10);
 	dsb_height->setValue(data.size.z);
 	dsb_height->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
 	dsb_focus = new DoubleSpinBoxSliderWidget(tr("Focus Distance (mm): "), 101, 10, 1000);
 	dsb_focus->setDecimals(0);
-	dsb_focus->setSingleStep(5);
+	dsb_focus->setSingleStep(10);
 	dsb_focus->setValue(data.focus_distance);
 	dsb_focus->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
@@ -98,7 +111,7 @@ void DockCollimator::initialize()
 	dsb_diameter[0]->setValue(data.diameter[0]);
 	dsb_diameter[0]->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-	dsb_septa1 = new DoubleSpinBoxSliderWidget(tr("Thickness (mm):"), 100, 0.1, 10);
+	dsb_septa1 = new DoubleSpinBoxSliderWidget(tr("Thickness (mm): "), 100, 0.1, 10);
 	dsb_septa1->setDecimals(2);
 	dsb_septa1->setSingleStep(0.1);
 	dsb_septa1->setValue(data.septa[0]);
@@ -128,6 +141,9 @@ void DockCollimator::initialize()
 	dsb_septa2->setLineWidth(1);
 	dsb_septa2->setText(QString::number(data.septa[1]));
 
+	cb_conv_div_mix = new QCheckBox(tr("Mix converging-divering hole"));
+	cb_conv_div_mix->setChecked(false);
+
 	QHBoxLayout* hblayout1 = new QHBoxLayout();
 	hblayout1->addWidget(newLabel(tr("Thickness (mm): "), w_label));
 	hblayout1->addStretch();
@@ -136,6 +152,7 @@ void DockCollimator::initialize()
 	QVBoxLayout* vblayout3 = new QVBoxLayout();
 	vblayout3->addWidget(dsb_diameter[1]);
 	vblayout3->addLayout(hblayout1);
+	vblayout3->addWidget(cb_conv_div_mix);
 
 	QGroupBox* gb_en = new QGroupBox(tr("Bottom Plane (X-ray side)"));
 	gb_en->setLayout(vblayout3);
@@ -185,7 +202,9 @@ void DockCollimator::initialize()
 
 	// INFO
 	lb_x_side_open_area = new QLabel(this);
+	lb_x_side_open_area->setMinimumHeight(22);
 	lb_x_side_hole_num = new QLabel(this);
+	lb_x_side_hole_num->setMinimumHeight(22);
 
 	QGridLayout* grid_info = new QGridLayout();
 	grid_info->addWidget(newLabel(tr("Open Area Ratio: "), w_label), 0, 0);
@@ -223,21 +242,14 @@ void DockCollimator::initialize()
 	lb_penumbra->setFrameStyle(QFrame::Panel | QFrame::Sunken);
 	lb_penumbra->setLineWidth(1);
 
-	QLabel* seperator1 = new QLabel("/");
-	QLabel* seperator2 = new QLabel("/");
-	seperator1->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	seperator1->setMinimumHeight(22);
-	seperator2->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-	seperator2->setMinimumHeight(22);
-
 	QHBoxLayout* hblayout = new QHBoxLayout();
 	hblayout->addWidget(newLabel(tr("Umbra: ")));
 	hblayout->addWidget(lb_umbra);
-	hblayout->addWidget(seperator1);
-	hblayout->addWidget(newLabel(tr("FWHM: ")));
+	hblayout->addStretch();
+	hblayout->addWidget(newLabel(tr("/ FWHM: ")));
 	hblayout->addWidget(lb_mid_penumbra);
-	hblayout->addWidget(seperator2);
-	hblayout->addWidget(newLabel(tr("Penum: ")));
+	hblayout->addStretch();
+	hblayout->addWidget(newLabel(tr("/ Penum: ")));
 	hblayout->addWidget(lb_penumbra);
 	hblayout->addStretch();
 
@@ -253,12 +265,16 @@ void DockCollimator::initialize()
 	QVBoxLayout* vbLayout = new QVBoxLayout(sc);
 
 	vbLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+	vbLayout->addWidget(gb_dir);
 	vbLayout->addWidget(gb_coll);
 	vbLayout->addWidget(gb_ex);
 	vbLayout->addWidget(gb_section);
 	vbLayout->addWidget(gb_en);
 	vbLayout->addWidget(gb_info);
 	vbLayout->addWidget(gb_umbra);
+
+	connect(rb_horizontal, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
+	connect(rb_vertical, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
 
 	connect(dsb_length, SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
 	connect(dsb_width,  SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
@@ -267,6 +283,8 @@ void DockCollimator::initialize()
 
 	connect(dsb_diameter[0], SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
 	connect(dsb_diameter[1], SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
+
+	connect(cb_conv_div_mix, SIGNAL(stateChanged(int)), this, SLOT(parameterUpdated()));
 
 	connect(dsb_septa1, SIGNAL(valueChanged(double)), this, SLOT(parameterUpdated()));
 	connect(dsb_section_height, SIGNAL(valueChanged(double)), this, SLOT(sectionUpdated()));
@@ -279,15 +297,40 @@ void DockCollimator::update(const CollimatorEx& new_data)
 	double area_1cm_circle = 0.5 * 0.5 * M_PI;
 	data = new_data;
 
+	rb_horizontal->setChecked(data.direction == 0);
+	rb_vertical->setChecked(data.direction != 0);
+
 	dsb_focus->setRange(data.size.z + 1, 1000);
 	dsb_diameter[0]->setRange(0.5, qMin(data.size.x, data.size.y));
 	dsb_diameter[1]->setRange(0.5, qMin(data.size.x, data.size.y));
 
 	dsb_septa2->setText(QString::number(data.septa[1], 'f', 2));
 
+	if (data.septa[0] < 0.3) {
+		dsb_septa1->setStyleSheet("QDoubleSpinBox { background-color : #FF5555;}");
+	}
+	else {
+		dsb_septa1->setStyleSheet("QDoubleSpinBox { background-color : white;}");
+	}
+
+
+	if (data.septa[1] < 0.3) {
+		dsb_septa2->setStyleSheet("QLabel { background-color : #FF5555;}");
+	}
+	else {
+		dsb_septa2->setStyleSheet("QLabel { background-color : white;}");
+	}
+
 	dsb_section_height->setRange(0, data.size.z);
 	lb_sec_diameter->setText(QString::number(data.sec_diameter, 'f', 2));
 	lb_sec_thickness->setText(QString::number(data.sec_thickness, 'f', 2));
+
+	if (data.sec_thickness < 0.3) {
+		lb_sec_thickness->setStyleSheet("QLabel { background-color : #FF5555;}");
+	}
+	else {
+		lb_sec_thickness->setStyleSheet("QLabel { background-color : white;}");
+	}
 
 	if (data.septa[1] > 0) {
 		double oar = 1 / (data.septa[1] / data.diameter[1] + 1);
@@ -324,6 +367,8 @@ void DockCollimator::resizeEvent(QResizeEvent* event)
 
 void DockCollimator::parameterUpdated()
 {
+	data.direction = rb_horizontal->isChecked() ? 0 : 1;
+
 	data.size.x = dsb_length->value();
 	data.size.y = dsb_width->value();
 	data.size.z = dsb_height->value();
