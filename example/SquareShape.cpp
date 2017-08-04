@@ -18,10 +18,6 @@ void SquareShape::setParameters(double _diameter, double _septa, int _direction)
     direction = _direction;
 }
 
-inline int positive_modulo(int i, int n) {
-    return (i % n + n) % n;
-}
-
 QList<QGraphicsItem*> SquareShape::buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag)
 {
     setScaleFactor(scale_factor);

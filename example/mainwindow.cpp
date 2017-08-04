@@ -181,21 +181,13 @@ void MainWindow::parameterUpdated()
 
     changeShape(collimator.shape);
 
-	gview_bottom->setCollimatorSize(collimator.size);
-	//  gview_bottom->buildHoles();
+	gview_bottom->setCollimatorSize(collimator.size, 1);
 
 	double ratio = (collimator.focus_distance - collimator.size.z) / collimator.focus_distance;
-	v3 top_size;
-	top_size.x = collimator.size.x * ratio;
-	top_size.y = collimator.size.y * ratio;
-	gview_top->setCollimatorSize(top_size);
-	// gview_top->buildHoles();
+	gview_top->setCollimatorSize(collimator.size, ratio);
 
 	ratio = (collimator.focus_distance - collimator.section_height) / collimator.focus_distance;
-	v3 section_size;
-	section_size.x = collimator.size.x * ratio;
-	section_size.y = collimator.size.y * ratio;
-	gview_section->setCollimatorSize(section_size);
+	gview_section->setCollimatorSize(collimator.size, ratio);
 
 	gview_umbra->setData(collimator);
 
@@ -231,10 +223,7 @@ void MainWindow::sectionUpdated()
 {
 	collimator = dockCollimator->getData();
 	double ratio =(collimator.focus_distance - collimator.section_height)/ collimator.focus_distance;
-	v3 section_size;
-	section_size.x = collimator.size.x * ratio;
-	section_size.y = collimator.size.y * ratio;
-	gview_section->setCollimatorSize(section_size);
+	gview_section->setCollimatorSize(collimator.size, ratio);
 
 	// 1. determine diameters
 	double section_diameter = collimator.diameter[1]

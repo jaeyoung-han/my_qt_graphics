@@ -23,7 +23,7 @@ namespace LCR {
 
         CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
 
-        void setCollimatorSize(const v3& coll_size);
+        void setCollimatorSize(const v3& coll_size, double ratio);
         void setParameters(double diameter, double septa, int direction);
 
         void buildHoles();
@@ -48,6 +48,7 @@ namespace LCR {
         QGraphicsRectItem* outrect_bot;
         QGraphicsRectItem* outrect_left;
         QGraphicsRectItem* outrect_right;
+        QGraphicsRectItem* shrink_rect;
 
         QGraphicsEllipseItem* circle;
 
@@ -56,6 +57,7 @@ namespace LCR {
         int direction;
 
         v3 size;
+        v3 shrink_size_;
     };
 
 };

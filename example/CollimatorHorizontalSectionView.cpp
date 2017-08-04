@@ -43,21 +43,26 @@ CollimatorHorizontalSectionView::CollimatorHorizontalSectionView(double ins_diam
     outrect_bot = new QGraphicsRectItem(0, 0, 1, 1);
     outrect_left = new QGraphicsRectItem(0, 0, 1, 1);
     outrect_right = new QGraphicsRectItem(0, 0, 1, 1);
+    shrink_rect = new QGraphicsRectItem(0, 0, 1, 1);
 
     outrect_top->setBrush(bkbrush);
     outrect_bot->setBrush(bkbrush);
     outrect_left->setBrush(bkbrush);
     outrect_right->setBrush(bkbrush);
+    shrink_rect->setPen(pen);
 
     outrect_top->setZValue(1);
     outrect_bot->setZValue(1);
     outrect_left->setZValue(1);
     outrect_right->setZValue(1);
+    shrink_rect->setZValue(1);
+
 
     scene()->addItem(outrect_top);
     scene()->addItem(outrect_bot);
     scene()->addItem(outrect_left);
     scene()->addItem(outrect_right);
+    scene()->addItem(shrink_rect);
 
     changeShape(SQUARE);
 }
@@ -80,9 +85,12 @@ bool CollimatorHorizontalSectionView::changeShape(int shape)
     return true;
 }
 
-void CollimatorHorizontalSectionView::setCollimatorSize(const v3& coll_size)
+void CollimatorHorizontalSectionView::setCollimatorSize(const v3& coll_size, double ratio)
 {
     size = coll_size;
+    shrink_size_.x = coll_size.x * ratio;
+    shrink_size_.y = coll_size.y * ratio;
+    shrink_size_.z = coll_size.z;
     shaper_->setCollimatorSize(coll_size);
 }
 
@@ -108,10 +116,6 @@ void CollimatorHorizontalSectionView::updateBase()
 
     base_rect->setRect(size.x * getScale() * -0.5, size.y * getScale() * -0.5, size.x * getScale(), size.y * getScale());
     base_rect->setPos(realToPixel(0, 0));
-}
-
-inline int positive_modulo(int i, int n) {
-    return (i % n + n) % n;
 }
 
 void CollimatorHorizontalSectionView::buildHoles()
@@ -187,274 +191,9 @@ void CollimatorHorizontalSectionView::draw_outside()
     rect.setHeight(brect.height() + pdia);
     outrect_right->setRect(rect);
     outrect_right->setPos(pos);
+
+    // Shrinked boundary
+    shrink_rect->setRect(shrink_size_.x * getScale() * -0.5, shrink_size_.y * getScale() * -0.5, shrink_size_.x * getScale(), shrink_size_.y * getScale());
+    shrink_rect->setPos(realToPixel(0, 0));
+
 }
-//
-//void CollimatorHorizontalSectionView::build_horizontal()
-//{
-//    QPen pen(Qt::black);
-//    QPen pen2(Qt::red);
-//    QBrush brush(Qt::white, Qt::SolidPattern);
-//
-//    qreal circum_diameter = diameter * 2 / sqrt(3);
-//    qreal scale = getScale();
-//
-//    qreal circum_diameter2 = circum_diameter;// (diameter + 2 * (septa - 0.3)) * 2 / sqrt(3);
-//
-//    qreal delX = sqrt(3) * (diameter + septa) / 2;
-//    qreal delY = (diameter + septa) / 2;
-//
-//    qreal angle = 0;
-//
-//    // 1st quadrant
-//    int j = 0;
-//    qreal ypos = j * delY;
-//    while (ypos - diameter / 2 < size.y / 2) {
-//
-//        int iminidx = qAbs(j % 2);
-//        qreal imin = iminidx * delX;
-//
-//        int imax = qCeil((size.x / 2 + circum_diameter / 2 - imin) / (2 * delX));
-//        for (int i = 0; i < imax; i++) {
-//            int p = 2 * i + iminidx;
-//            int q = 0.5 * (j - p);
-//            qreal xpos = p * delX;
-//            qreal ypos = delY * j;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        ypos = delY * (++j);
-//    }
-//
-//    // 2nd quadrant
-//    j = 0;
-//    ypos = j * delY;
-//    while (ypos - diameter / 2 < size.y / 2) {
-//
-//        int iminidx = qAbs(j % 2);
-//        qreal imin = iminidx * delX;
-//
-//        int imax = qCeil((size.x / 2 + circum_diameter / 2 - imin) / (2 * delX));
-//        for (int i = qAbs((j + 1) % 2); i < imax; i++) {
-//            int p = 2 * i + iminidx;
-//            int q = 0.5 * (j - p);
-//            qreal xpos = -p * delX;
-//            qreal ypos = delY * j;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        ypos = delY * (++j);
-//    }
-//
-//    // 3rd quadrant
-//    j = -1;
-//    ypos = j * delY;
-//    while (ypos + diameter / 2 > size.y / -2) {
-//
-//        int iminidx = qAbs(j % 2);
-//        qreal imin = iminidx * delX;
-//
-//        int imax = qCeil((size.x / 2 + circum_diameter / 2 - imin) / (2 * delX));
-//        for (int i = qAbs((j + 1) % 2); i < imax; i++) {
-//            int p = 2 * i + iminidx;
-//            int q = 0.5 * (j - p);
-//
-//            qreal xpos = -p * delX;
-//            qreal ypos = delY * j;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        ypos = delY * (--j);
-//    }
-//
-//    // 4th quadrant
-//    j = -1;
-//    ypos = j * delY;
-//    while (ypos + diameter / 2 > size.y / -2) {
-//        int iminidx = qAbs(j % 2);
-//        qreal imin = iminidx * delX;
-//
-//        int imax = qCeil((size.x / 2 + circum_diameter / 2 - imin) / (2 * delX));
-//        for (int i = 0; i < imax; i++) {
-//            int p = 2 * i + iminidx;
-//            int q = 0.5 * (j - p);
-//
-//            qreal xpos = p * delX;
-//            qreal ypos = delY * j;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        ypos = delY * (--j);
-//    }
-//}
-//
-//void CollimatorHorizontalSectionView::build_vertical()
-//{
-//    QPen pen(Qt::black);
-//    QPen pen2(Qt::red);
-//    QBrush brush(Qt::white, Qt::SolidPattern);
-//
-//    qreal circum_diameter = diameter * 2 / sqrt(3);
-//    qreal scale = getScale();
-//
-//    qreal circum_diameter2 = circum_diameter;// (diameter + 2 * (septa - 0.3)) * 2 / sqrt(3);
-//
-//    qreal delX = (diameter + septa) / 2;
-//    qreal delY = sqrt(3) * (diameter + septa) / 2;
-//
-//    qreal angle = M_PI_2;
-//
-//    // 1st quadrant
-//    int i = 0;
-//    qreal xpos = i * delX;
-//    while (xpos - diameter / 2 < size.x / 2) {
-//
-//        int iminidx = qAbs(i % 2);
-//        qreal imin = iminidx * delY;
-//
-//        int imax = qCeil((size.y / 2 + circum_diameter / 2 - imin) / (2 * delY));
-//        for (int j = 0; j < imax; j++) {
-//            int q = 2 * j + iminidx;
-//            int p = 0.5 * (i - q);
-//
-//            qreal xpos = delX * i;
-//            qreal ypos = q * delY;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        xpos = delX * (++i);
-//    }
-//
-//    // 2nd quadrant
-//    i = 0;
-//    xpos = i * delX;
-//    while (xpos - diameter / 2 < size.x / 2) {
-//
-//        int iminidx = qAbs(i % 2);
-//        qreal imin = iminidx * delY;
-//
-//        int imax = qCeil((size.y / 2 + circum_diameter / 2 - imin) / (2 * delY));
-//        for (int j = qAbs((i + 1) % 2); j < imax; j++) {
-//            int q = 2 * j + iminidx;
-//            int p = 0.5 * (i - q);
-//
-//            qreal xpos = delX * i;
-//            qreal ypos = -q * delY;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        xpos = delX * (++i);
-//    }
-//
-//    // 3rd quadrant
-//    i = -1;
-//    xpos = i * delX;
-//    while (xpos + diameter / 2 > size.x / -2) {
-//
-//        int iminidx = qAbs(i % 2);
-//        qreal imin = iminidx * delY;
-//
-//        int imax = qCeil((size.y / 2 + circum_diameter / 2 - imin) / (2 * delY));
-//        for (int j = qAbs((i + 1) % 2); j < imax; j++) {
-//            int q = 2 * j + iminidx;
-//            int p = 0.5 * (i - q);
-//
-//            qreal xpos = delX * i;
-//            qreal ypos = -q * delY;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        xpos = delX * (--i);
-//    }
-//
-//    // 4th quadrant
-//    i = -1;
-//    xpos = i * delX;
-//    while (xpos + diameter / 2 > size.x / -2) {
-//        int iminidx = qAbs(i % 2);
-//        qreal imin = iminidx * delY;
-//
-//        int imax = qCeil((size.y / 2 + circum_diameter / 2 - imin) / (2 * delY));
-//        for (int j = 0; j < imax; j++) {
-//            int q = 2 * j + iminidx;
-//            int p = 0.5 * (i - q);
-//
-//            qreal xpos = delX * i;
-//            qreal ypos = q * delY;
-//
-//            qreal hex_dia = circum_diameter;
-//            if (positive_modulo(p, 3) == positive_modulo(q, 3)) {
-//                hex_dia = circum_diameter2;
-//            }
-//            GraphicsHexagonItem *hex = new GraphicsHexagonItem(hex_dia * scale, angle);
-//            hex->setPen(pen);
-//            hex->setBrush(brush);
-//            hex->setPos(realToPixel(xpos, ypos));
-//            scene()->addItem(hex);
-//            hex_list.push_back(hex);
-//        }
-//        xpos = delX * (--i);
-//    }
-//}
