@@ -56,6 +56,17 @@ void DockCollimator::initialize()
 	int w_slider = 108;
 	int w_spinbox = 64;
 
+    rb_shape_hexagon = new QRadioButton(tr("Hexagon"));
+    rb_shape_hexagon->setChecked(true);
+    rb_shape_square = new QRadioButton(tr("Square"));
+
+    QHBoxLayout* hb_shape = new QHBoxLayout();
+    hb_shape->addWidget(rb_shape_hexagon);
+    hb_shape->addWidget(rb_shape_square);
+
+    QGroupBox* gb_shape = new QGroupBox(tr("Hole Shape"));
+    gb_shape->setLayout(hb_shape);
+
 	rb_horizontal = new QRadioButton(tr("Horizontal"));
 	rb_horizontal->setChecked(true);
 	rb_vertical = new QRadioButton(tr("Vertical"));
@@ -64,8 +75,9 @@ void DockCollimator::initialize()
 	hb_dir->addWidget(rb_horizontal);
 	hb_dir->addWidget(rb_vertical);
 
-	QGroupBox* gb_dir = new QGroupBox(tr("Hexagon Direction"));
+	gb_dir = new QGroupBox(tr("Hexagon Direction"));
 	gb_dir->setLayout(hb_dir);
+    gb_dir->setEnabled(true);
 
 	// Overall size (L, W, H), focus
 	dsb_length = new DoubleSpinBoxSliderWidget(tr("Lengh (mm): "), 100, 10, 1000);
@@ -105,7 +117,7 @@ void DockCollimator::initialize()
 
 	// PATIENT SIDE
 	// Diameter, septa at Exit (Patient side)
-	dsb_diameter[0] = new DoubleSpinBoxSliderWidget(tr("Diameter (mm): "), 100, 0.5, 10);
+	dsb_diameter[0] = new DoubleSpinBoxSliderWidget(tr("Diameter (mm): "), 100, 0.1, 10);
 	dsb_diameter[0]->setDecimals(2);
 	dsb_diameter[0]->setSingleStep(0.1);
 	dsb_diameter[0]->setValue(data.diameter[0]);
@@ -127,7 +139,7 @@ void DockCollimator::initialize()
 
 
 	// X-RAY SIDE
-	dsb_diameter[1] = new DoubleSpinBoxSliderWidget(tr("Diameter (mm): "), 100, 0.5, 10);
+	dsb_diameter[1] = new DoubleSpinBoxSliderWidget(tr("Diameter (mm): "), 100, 0.1, 10);
 	dsb_diameter[1]->setDecimals(2);
 	dsb_diameter[1]->setSingleStep(0.1);
 	dsb_diameter[1]->setValue(data.diameter[1]);
@@ -265,6 +277,7 @@ void DockCollimator::initialize()
 	QVBoxLayout* vbLayout = new QVBoxLayout(sc);
 
 	vbLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    vbLayout->addWidget(gb_shape);
 	vbLayout->addWidget(gb_dir);
 	vbLayout->addWidget(gb_coll);
 	vbLayout->addWidget(gb_ex);
@@ -272,6 +285,9 @@ void DockCollimator::initialize()
 	vbLayout->addWidget(gb_en);
 	vbLayout->addWidget(gb_info);
 	vbLayout->addWidget(gb_umbra);
+
+    connect(rb_shape_hexagon, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
+    connect(rb_shape_square, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
 
 	connect(rb_horizontal, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
 	connect(rb_vertical, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
@@ -301,8 +317,8 @@ void DockCollimator::update(const CollimatorEx& new_data)
 	rb_vertical->setChecked(data.direction != 0);
 
 	dsb_focus->setRange(data.size.z + 1, 1000);
-	dsb_diameter[0]->setRange(0.5, qMin(data.size.x, data.size.y));
-	dsb_diameter[1]->setRange(0.5, qMin(data.size.x, data.size.y));
+	dsb_diameter[0]->setRange(0.1, qMin(data.size.x, data.size.y));
+	dsb_diameter[1]->setRange(0.1, qMin(data.size.x, data.size.y));
 
 	dsb_septa2->setText(QString::number(data.septa[1], 'f', 2));
 
@@ -367,6 +383,14 @@ void DockCollimator::resizeEvent(QResizeEvent* event)
 
 void DockCollimator::parameterUpdated()
 {
+    if (rb_shape_hexagon->isChecked()) {
+        data.shape = 1;
+        gb_dir->setEnabled(true);
+    }
+    else if (rb_shape_square->isChecked()) {
+        data.shape = 2;
+        gb_dir->setEnabled(false);
+    }
 	data.direction = rb_horizontal->isChecked() ? 0 : 1;
 
 	data.size.x = dsb_length->value();

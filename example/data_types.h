@@ -15,6 +15,7 @@ namespace LCR {
 		double diameter[2];
 		double septa[2];
 		double section_height;
+        int shape;
 	};
 	
 	struct CollimatorEx : public Collimator {

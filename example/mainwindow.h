@@ -26,6 +26,7 @@ private slots:
 	void sectionUpdated();
 	void loadSettings();
 	void saveSettings();
+    void changeShape(int);
 
 protected:
 	void createActions();
