@@ -5,48 +5,58 @@
 #include "graphicsview.h"
 #include "graphicshexagonitem.h"
 #include "data_types.h"
+#include "SectionShape.h"
 
 class QGraphicsItemGroup;
 
 namespace LCR {
 
-	class CollimatorHorizontalSectionView : public MQGAPI::GraphicsView
-	{
-		Q_OBJECT
-	public:
-		CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
+    class CollimatorHorizontalSectionView : public MQGAPI::GraphicsView
+    {
+        Q_OBJECT
+    public:
+        enum SHAPE {
+            CIRCLE = 0,
+            HEXAGON = 1,
+            SQUARE = 2
+        };
 
-		void setCollimatorSize(const v3& coll_size);
-		void setParameters(double diameter, double septa, int direction);
+        CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
 
-		void buildHoles();
-		void updateBase();
-		void drawCircle(double radius);
+        void setCollimatorSize(const v3& coll_size);
+        void setParameters(double diameter, double septa, int direction);
 
-	private:
-		void build_horizontal();
-		void build_vertical();
-		void draw_outside();
+        void buildHoles();
+        void updateBase();
+        void drawCircle(double radius);
 
-	private:
-		QGraphicsItemGroup* hex_group;
-		QList<QGraphicsItem*> hex_list;
+        bool changeShape(int shape);
 
-		QGraphicsRectItem* base_rect;
+    private:
+        void build_horizontal();
+        void build_vertical();
+        void draw_outside();
 
-		QGraphicsRectItem* outrect_top;
-		QGraphicsRectItem* outrect_bot;
-		QGraphicsRectItem* outrect_left;
-		QGraphicsRectItem* outrect_right;
+    private:
+        SectionShape* shaper_;
+        QGraphicsItemGroup* hex_group;
+        QList<QGraphicsItem*> hex_list;
 
-		QGraphicsEllipseItem* circle;
+        QGraphicsRectItem* base_rect;
 
-		double diameter;  // inscribed circle
-		double septa;
-		int direction;
+        QGraphicsRectItem* outrect_top;
+        QGraphicsRectItem* outrect_bot;
+        QGraphicsRectItem* outrect_left;
+        QGraphicsRectItem* outrect_right;
 
-		v3 size;
-	};
+        QGraphicsEllipseItem* circle;
+
+        double diameter;  // inscribed circle
+        double septa;
+        int direction;
+
+        v3 size;
+    };
 
 };
 

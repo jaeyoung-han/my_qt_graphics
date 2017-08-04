@@ -52,6 +52,7 @@ MainWindow::MainWindow()
 	setCentralWidget(main_splitter);
 
 	loadSettings();
+    changeShape(collimator.shape);
 	collimator.section_height = 0;
 
 	createActions();
@@ -133,7 +134,9 @@ void MainWindow::loadSettings()
 {
 	QSettings settings;
 
-	collimator.direction = settings.value("HEXAGON_HORIZONTAL", 0).toInt();
+    collimator.shape = settings.value("HOLE_SHAPE", 0).toInt();
+
+    collimator.direction = settings.value("HEXAGON_HORIZONTAL", 0).toInt();
 	collimator.diameter[0] = settings.value("DIAMETER_PATIENT_SIDE", 2.0).toDouble();
 	collimator.diameter[1] = settings.value("DIAMETER_X-RAY_SIDE", 2.5).toDouble();
 	collimator.septa[0] = settings.value("SEPTA_PATIENT_SIDE", 0.3).toDouble();
@@ -148,6 +151,8 @@ void MainWindow::saveSettings()
 {
 	QSettings settings;
 
+    settings.setValue("HOLE_SHAPE", collimator.shape);
+
 	settings.setValue("HEXAGON_HORIZONTAL", collimator.direction);
 	settings.setValue("DIAMETER_PATIENT_SIDE", collimator.diameter[0]);
 	settings.setValue("DIAMETER_X-RAY_SIDE", collimator.diameter[1]);
@@ -159,6 +164,13 @@ void MainWindow::saveSettings()
 	settings.setValue("FOCAL_LENGTH", collimator.focus_distance);
 }
 
+void MainWindow::changeShape(int shape)
+{
+    gview_top->changeShape(shape);
+    gview_section->changeShape(shape);
+    gview_bottom->changeShape(shape);
+}
+
 void MainWindow::sizeUpdated()
 {
 }
@@ -166,6 +178,8 @@ void MainWindow::sizeUpdated()
 void MainWindow::parameterUpdated()
 {
 	collimator = dockCollimator->getData();
+
+    changeShape(collimator.shape);
 
 	gview_bottom->setCollimatorSize(collimator.size);
 	//  gview_bottom->buildHoles();

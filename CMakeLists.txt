@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8.11)
 
 project(my_qt_graphics)
 
-set(CMAKE_PREFIX_PATH /usr/local/opt/qt5)
+set(CMAKE_PREFIX_PATH "" CACHE PATH "Set Qt5 path here")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
