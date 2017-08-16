@@ -1,24 +1,24 @@
 #include <QtMath>
 
-#include "SquareShape.h"
+#include "shape_square_thick.h"
 #include "graphicshexagonitem.h"
 
 using namespace LCR;
 using namespace MQGAPI;
 
-void SquareShape::setCollimatorSize(const v3& coll_size)
+void ShapeSquareThick::setCollimatorSize(const v3& coll_size)
 {
     size = coll_size;
 }
 
-void SquareShape::setParameters(double _diameter, double _septa, int _direction)
+void ShapeSquareThick::setParameters(double _diameter, double _septa, int _direction)
 {
     diameter = _diameter;
     septa = _septa;
     direction = _direction;
 }
 
-QList<QGraphicsItem*> SquareShape::buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag)
+QList<QGraphicsItem*> ShapeSquareThick::buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag)
 {
     setScaleFactor(scale_factor);
     setOrigin(origin);
@@ -26,7 +26,7 @@ QList<QGraphicsItem*> SquareShape::buildHoles(QGraphicsScene* scene, QPointF ori
     return build_horizontal(scene);
 }
 
-QList<QGraphicsItem*> SquareShape::build_horizontal(QGraphicsScene* scene)
+QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
 {
     QList<QGraphicsItem*> hex_list;
 

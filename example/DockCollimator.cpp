@@ -59,10 +59,12 @@ void DockCollimator::initialize()
     rb_shape_hexagon = new QRadioButton(tr("Hexagon"));
     rb_shape_hexagon->setChecked(true);
     rb_shape_square = new QRadioButton(tr("Square"));
+    rb_shape_square_thickness = new QRadioButton(tr("Square (thick)"));
 
     QHBoxLayout* hb_shape = new QHBoxLayout();
     hb_shape->addWidget(rb_shape_hexagon);
     hb_shape->addWidget(rb_shape_square);
+    hb_shape->addWidget(rb_shape_square_thickness);
 
     QGroupBox* gb_shape = new QGroupBox(tr("Hole Shape"));
     gb_shape->setLayout(hb_shape);
@@ -288,6 +290,7 @@ void DockCollimator::initialize()
 
     connect(rb_shape_hexagon, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
     connect(rb_shape_square, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
+    connect(rb_shape_square_thickness, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
 
 	connect(rb_horizontal, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
 	connect(rb_vertical, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
@@ -312,6 +315,22 @@ void DockCollimator::update(const CollimatorEx& new_data)
 {
 	double area_1cm_circle = 0.5 * 0.5 * M_PI;
 	data = new_data;
+
+    switch (data.shape) {
+    default:
+    case 1:
+        rb_shape_hexagon->setChecked(true);
+        gb_dir->setVisible(true);
+        break;
+    case 2:
+        rb_shape_square->setChecked(true);
+        gb_dir->setVisible(false);
+        break;
+    case 12:
+        rb_shape_square_thickness->setChecked(true);
+        gb_dir->setVisible(false);
+        break;
+    }
 
 	rb_horizontal->setChecked(data.direction == 0);
 	rb_vertical->setChecked(data.direction != 0);
@@ -359,7 +378,6 @@ void DockCollimator::update(const CollimatorEx& new_data)
 		lb_x_side_hole_num->setText("-");
 	}
 
-
 	lb_umbra->setText(QString::number(data.umbra_width, 'f', 2));
 	lb_mid_penumbra->setText(QString::number((qAbs(data.umbra_width) + qAbs(data.penumbra_width)) * 0.5, 'f', 2));
 	lb_penumbra->setText(QString::number(data.penumbra_width, 'f', 2));
@@ -385,13 +403,17 @@ void DockCollimator::parameterUpdated()
 {
     if (rb_shape_hexagon->isChecked()) {
         data.shape = 1;
-        gb_dir->setEnabled(true);
+        gb_dir->setVisible(true);
     }
     else if (rb_shape_square->isChecked()) {
         data.shape = 2;
-        gb_dir->setEnabled(false);
+        gb_dir->setVisible(false);
     }
-	data.direction = rb_horizontal->isChecked() ? 0 : 1;
+    else if (rb_shape_square_thickness->isChecked()) {
+        data.shape = 12;
+        gb_dir->setVisible(false);
+    }
+    data.direction = rb_horizontal->isChecked() ? 0 : 1;
 
 	data.size.x = dsb_length->value();
 	data.size.y = dsb_width->value();

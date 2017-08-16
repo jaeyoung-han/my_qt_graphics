@@ -18,7 +18,8 @@ namespace LCR {
         enum SHAPE {
             CIRCLE = 0,
             HEXAGON = 1,
-            SQUARE = 2
+            SQUARE = 2,
+            SQUARE_THICK = 12,
         };
 
         CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);

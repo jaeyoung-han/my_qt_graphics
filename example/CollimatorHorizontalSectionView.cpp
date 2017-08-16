@@ -2,8 +2,9 @@
 
 #include "CollimatorHorizontalSectionView.h"
 #include "graphicshexagonitem.h"
-#include "HexagonShape.h"
-#include "SquareShape.h"
+#include "shape_hexagon.h"
+#include "shape_square.h"
+#include "shape_square_thick.h"
 
 using namespace LCR;
 using namespace MQGAPI;
@@ -79,6 +80,9 @@ bool CollimatorHorizontalSectionView::changeShape(int shape)
         break;
     case SQUARE:
         shaper_ = new SquareShape();
+        break;
+    case SQUARE_THICK:
+        shaper_ = new ShapeSquareThick();
         break;
     }
 

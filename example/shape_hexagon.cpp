@@ -1,6 +1,6 @@
 #include <QtMath>
 
-#include "HexagonShape.h"
+#include "shape_hexagon.h"
 #include "graphicshexagonitem.h"
 
 using namespace LCR;

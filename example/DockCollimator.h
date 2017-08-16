@@ -39,6 +39,7 @@ private slots:
 private:
     QRadioButton* rb_shape_hexagon;
     QRadioButton* rb_shape_square;
+    QRadioButton* rb_shape_square_thickness;
 
     QRadioButton* rb_horizontal;
 	QRadioButton* rb_vertical;

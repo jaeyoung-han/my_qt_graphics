@@ -24,8 +24,9 @@ set(HEADERS
   DockCollimator.h
   CollimatorHorizontalSectionView.h
   SectionShape.h
-  HexagonShape.h
-  SquareShape.h
+  shape_hexagon.h
+  shape_square.h
+  shape_square_thick.h
   CollimatorVerticalSectionView.h
   UmbraView.h
   mainwindow.h
@@ -36,8 +37,9 @@ set(SOURCES
   DoubleSpinBoxSliderWidget.cpp
   DockCollimator.cpp
   CollimatorHorizontalSectionView.cpp
-  HexagonShape.cpp
-  SquareShape.cpp
+  shape_hexagon.cpp
+  shape_square.cpp
+  shape_square_thick.cpp
   CollimatorVerticalSectionView.cpp
   UmbraView.cpp
   mainwindow.cpp

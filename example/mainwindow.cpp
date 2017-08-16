@@ -52,6 +52,7 @@ MainWindow::MainWindow()
 	setCentralWidget(main_splitter);
 
 	loadSettings();
+
     changeShape(collimator.shape);
 	collimator.section_height = 0;
 
