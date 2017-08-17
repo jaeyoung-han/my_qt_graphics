@@ -276,6 +276,7 @@ void MainWindow::updateUmbra()
 
 void MainWindow::updatePointInCheck(QPointF pos, bool res)
 {
+    statusBar()->setStyleSheet(res ? "background-color : #FF0000;" : "background-color : none;");
     statusBar()->showMessage(tr("(%1, %2) %3").arg(QString::number(pos.x(), 'f', 2)).arg(QString::number(pos.y(), 'f', 2)).arg(res));
 }
 

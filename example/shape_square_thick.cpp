@@ -33,37 +33,34 @@ void ShapeSquareThick::updateAngles()
     qreal diameter = size_.diameter[0];
     qreal septa = size_.septa[0];
     qreal b = size_.focus_distance - size_.size.z;
+    qreal bb = b * b;
 
     x_wallangles_.clear();
     qreal x_size = b / size_.focus_distance * size_.size.x / 2;
     qreal xpos = 0;
     while (xpos < x_size + diameter / 2) {
-        qreal theta = atan2((xpos + diameter / 2), b);
-        qreal cos_theta = cos(theta);
-        qreal t = septa / cos_theta;
-
         WallAngle wa;
-        wa.tangent = (xpos + diameter / 2 + t / 2) / b;
-        wa.thick_in_plane = t;
+
+        qreal r_cos_theta = sqrt((bb + (xpos + diameter / 2) * (xpos + diameter / 2)) / bb);
+        wa.thick_in_plane = septa * r_cos_theta;
+        wa.tangent = (xpos + wa.thick_in_plane / 2 + diameter / 2) / b;
         x_wallangles_.push_back(wa);
 
-        xpos = xpos + diameter + t;
+        xpos = xpos + diameter + wa.thick_in_plane;
     }
 
     y_wallangles_.clear();
     qreal y_size = b / size_.focus_distance * size_.size.y / 2;
     qreal ypos = 0;
     while (ypos < y_size + diameter / 2) {
-        qreal theta = atan2((ypos + diameter / 2), b);
-        qreal cos_theta = cos(theta);
-        qreal t = septa / cos_theta;
-
         WallAngle wa;
-        wa.tangent = (ypos + diameter / 2 + t / 2) / b;
-        wa.thick_in_plane = t;
+
+        qreal r_cos_theta = sqrt((bb + (ypos + diameter / 2) * (ypos + diameter / 2)) / bb);
+        wa.thick_in_plane = septa * r_cos_theta;
+        wa.tangent = (ypos + wa.thick_in_plane / 2 + diameter / 2) / b;
         y_wallangles_.push_back(wa);
 
-        ypos = ypos + diameter + t;
+        ypos = ypos + diameter + wa.thick_in_plane;
     }
 }
 
@@ -96,8 +93,8 @@ QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
     for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
         const WallAngle& wa2 = x_wallangles_[i+1];
         const WallAngle& wa1 = x_wallangles_[i];
-        size_x = (wa2.tangent - wa1.tangent) * b - wa1.thick_in_plane;
-        xpos = xpos + size_x + wa1.thick_in_plane;
+        size_x = (wa2.tangent - wa1.tangent) * b - (wa2.thick_in_plane + wa1.thick_in_plane) / 2;
+        xpos = wa1.tangent * b + size_x/2 + wa1.thick_in_plane/2;
 
         // Right 
         QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
@@ -121,8 +118,8 @@ QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
         const WallAngle& ywa2 = y_wallangles_[j + 1];
         const WallAngle& ywa1 = y_wallangles_[j];
 
-        size_y = (ywa2.tangent - ywa1.tangent) * b - ywa1.thick_in_plane;
-        ypos = ypos + size_y + ywa1.thick_in_plane;
+        size_y = (ywa2.tangent - ywa1.tangent) * b - (ywa2.thick_in_plane + ywa1.thick_in_plane) / 2;
+        ypos = ywa1.tangent * b + size_y/2 + ywa1.thick_in_plane/2;
 
         /////////////////////////////////////////////////////
         // Upper line
@@ -142,8 +139,8 @@ QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
         for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
             const WallAngle& wa2 = x_wallangles_[i + 1];
             const WallAngle& wa1 = x_wallangles_[i];
-            size_x = (wa2.tangent - wa1.tangent) * b - wa1.thick_in_plane;
-            xpos = xpos + size_x + wa1.thick_in_plane;
+            size_x = (wa2.tangent - wa1.tangent) * b - (wa2.thick_in_plane + wa1.thick_in_plane) / 2;
+            xpos = wa1.tangent * b + size_x / 2 + wa1.thick_in_plane / 2;
 
             // Right
             QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
@@ -180,8 +177,8 @@ QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
         for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
             const WallAngle& wa2 = x_wallangles_[i + 1];
             const WallAngle& wa1 = x_wallangles_[i];
-            size_x = (wa2.tangent - wa1.tangent) * b - wa1.thick_in_plane;
-            xpos = xpos + size_x + wa1.thick_in_plane;
+            size_x = (wa2.tangent - wa1.tangent) * b - (wa2.thick_in_plane + wa1.thick_in_plane) / 2;
+            xpos = wa1.tangent * b + size_x / 2 + wa1.thick_in_plane / 2;
 
             // Right
             QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
@@ -200,104 +197,6 @@ QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
             sqr_list.push_back(sqr2);
         }
     }
-
-    //while (xpos < size.x / 2 + diameter / 2) {
-    //    QGraphicsRectItem *sqr = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
-    //    sqr->setPen(pen);
-    //    sqr->setBrush(brush);
-    //    sqr->setPos(realToPixel(xpos, ypos));
-    //    scene->addItem(sqr);
-    //    sqr_list.push_back(sqr);
-
-    //    if (xpos != 0) {
-    //        QGraphicsRectItem *sqr1 = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
-    //        sqr1->setPen(pen);
-    //        sqr1->setBrush(brush);
-    //        sqr1->setPos(realToPixel(-xpos, ypos));
-    //        scene->addItem(sqr1);
-    //        sqr_list.push_back(sqr1);
-    //    }
-
-    //    // update xpos
-    //    qreal tan_theta = (xpos + diameter / 2) / b;
-    //    qreal theta = atan(tan_theta);
-    //    qreal cos_theta = cos(theta);
-    //    qreal t = septa / cos_theta;
-    //    xpos = xpos + diameter + t;
-    //}
-
-    //qreal tan_theta = (ypos + diameter / 2) / b;
-    //qreal theta = atan(tan_theta);
-    //qreal cos_theta = cos(theta);
-    //qreal t = septa / cos_theta;
-
-    //ypos = ypos + diameter + t;
-
-    //while (ypos < size.y / 2 + diameter / 2) {
-    //    {
-    //        xpos = 0;
-
-    //        while (xpos < size.x / 2 + diameter / 2) {
-    //            QGraphicsRectItem *sqr = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
-    //            sqr->setPen(pen);
-    //            sqr->setBrush(brush);
-    //            sqr->setPos(realToPixel(xpos, ypos));
-    //            scene->addItem(sqr);
-    //            sqr_list.push_back(sqr);
-
-    //            if (xpos != 0) {
-    //                QGraphicsRectItem *sqr1 = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
-    //                sqr1->setPen(pen);
-    //                sqr1->setBrush(brush);
-    //                sqr1->setPos(realToPixel(-xpos, ypos));
-    //                scene->addItem(sqr1);
-    //                sqr_list.push_back(sqr1);
-    //            }
-
-    //            // update xpos
-    //            qreal tan_theta = (xpos + diameter / 2) / b;
-    //            qreal theta = atan(tan_theta);
-    //            qreal cos_theta = cos(theta);
-    //            qreal t = septa / cos_theta;
-    //            xpos = xpos + diameter + t;
-    //        }
-    //    }
-
-    //    {
-    //        xpos = 0;
-    //        while (xpos < size.x / 2 + diameter / 2) {
-    //            QGraphicsRectItem *sqr = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
-    //            sqr->setPen(pen);
-    //            sqr->setBrush(brush);
-    //            sqr->setPos(realToPixel(xpos, -ypos));
-    //            scene->addItem(sqr);
-    //            sqr_list.push_back(sqr);
-
-    //            if (xpos != 0) {
-    //                QGraphicsRectItem *sqr1 = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
-    //                sqr1->setPen(pen);
-    //                sqr1->setBrush(brush);
-    //                sqr1->setPos(realToPixel(-xpos, -ypos));
-    //                scene->addItem(sqr1);
-    //                sqr_list.push_back(sqr1);
-    //            }
-
-    //            // update xpos
-    //            qreal tan_theta = (xpos + diameter / 2) / b;
-    //            qreal theta = atan(tan_theta);
-    //            qreal cos_theta = cos(theta);
-    //            qreal t = septa / cos_theta;
-    //            xpos = xpos + diameter + t;
-    //        }
-    //    }
-
-    //    // update ypos
-    //    qreal tan_theta = (ypos + diameter / 2) / b;
-    //    qreal theta = atan(tan_theta);
-    //    qreal cos_theta = cos(theta);
-    //    qreal t = septa / cos_theta;
-    //    ypos = ypos + diameter + t;
-    //}
 
     return sqr_list;
 }
