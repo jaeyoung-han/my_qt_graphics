@@ -11,7 +11,7 @@ namespace LCR {
 	public:
         SectionShape() : scale_factor_(0), origin_(0, 0) {}
 
-		virtual void setCollimatorSize(const v3& coll_size) = 0;
+        virtual void setCollimatorSize(const CollimatorEx& size) = 0;
 		virtual void setParameters(double diameter, double septa, int direction) = 0;
 
 		virtual QList<QGraphicsItem*> buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag) = 0;
@@ -33,6 +33,9 @@ namespace LCR {
         QPointF realToPixel(qreal x, qreal y) {
             return QPointF(x * scale_factor_ + origin_.x(), origin_.y() - y * scale_factor_);
         }
+    public slots:
+        virtual void updateMousePos(QPointF point) {};
+        virtual bool checkMousePointInAir(QPointF point) { return false;  }
 
     private:
         qreal scale_factor_;

@@ -27,6 +27,7 @@ private slots:
 	void loadSettings();
 	void saveSettings();
     void changeShape(int);
+    void updatePointInCheck(QPointF, bool);
 
 protected:
 	void createActions();

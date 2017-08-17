@@ -16,22 +16,27 @@ namespace LCR {
     public:
         explicit SquareShape() : SectionShape() {}
 
-        void setCollimatorSize(const v3& coll_size);
+        void setCollimatorSize(const CollimatorEx& size);
         void setParameters(double diameter, double septa, int direction);
 
         QList<QGraphicsItem*> buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag);
 
         int type() { return 2; }
 
+    public slots:
+        bool checkMousePointInAir(QPointF point);
+
     private:
         QList<QGraphicsItem*> build_horizontal(QGraphicsScene* scene);
+        QPointF getNearestRectangle(QPointF point);
+        bool checkPointInAir(QPointF point, QPointF rect_center);
 
     private:
         double diameter;  // inscribed circle
         double septa;
         int direction;
 
-        v3 size;
+        CollimatorEx size_;
     };
 };
 

@@ -6,16 +6,18 @@
 using namespace LCR;
 using namespace MQGAPI;
 
-void ShapeSquareThick::setCollimatorSize(const v3& coll_size)
+void ShapeSquareThick::setCollimatorSize(const CollimatorEx& size)
 {
-    size = coll_size;
+    size_ = size;
 }
 
 void ShapeSquareThick::setParameters(double _diameter, double _septa, int _direction)
 {
-    diameter = _diameter;
-    septa = _septa;
-    direction = _direction;
+    //diameter = _diameter;
+    //septa = _septa;
+    //direction = _direction;
+
+    updateAngles();
 }
 
 QList<QGraphicsItem*> ShapeSquareThick::buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag)
@@ -26,100 +28,345 @@ QList<QGraphicsItem*> ShapeSquareThick::buildHoles(QGraphicsScene* scene, QPoint
     return build_horizontal(scene);
 }
 
+void ShapeSquareThick::updateAngles()
+{
+    qreal diameter = size_.diameter[0];
+    qreal septa = size_.septa[0];
+    qreal b = size_.focus_distance - size_.size.z;
+
+    x_wallangles_.clear();
+    qreal x_size = b / size_.focus_distance * size_.size.x / 2;
+    qreal xpos = 0;
+    while (xpos < x_size + diameter / 2) {
+        qreal theta = atan2((xpos + diameter / 2), b);
+        qreal cos_theta = cos(theta);
+        qreal t = septa / cos_theta;
+
+        WallAngle wa;
+        wa.tangent = (xpos + diameter / 2 + t / 2) / b;
+        wa.thick_in_plane = t;
+        x_wallangles_.push_back(wa);
+
+        xpos = xpos + diameter + t;
+    }
+
+    y_wallangles_.clear();
+    qreal y_size = b / size_.focus_distance * size_.size.y / 2;
+    qreal ypos = 0;
+    while (ypos < y_size + diameter / 2) {
+        qreal theta = atan2((ypos + diameter / 2), b);
+        qreal cos_theta = cos(theta);
+        qreal t = septa / cos_theta;
+
+        WallAngle wa;
+        wa.tangent = (ypos + diameter / 2 + t / 2) / b;
+        wa.thick_in_plane = t;
+        y_wallangles_.push_back(wa);
+
+        ypos = ypos + diameter + t;
+    }
+}
+
 QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
 {
-    QList<QGraphicsItem*> hex_list;
+    QList<QGraphicsItem*> sqr_list;
 
     QPen pen(Qt::black);
     QPen pen2(Qt::red);
     QBrush brush(Qt::white, Qt::SolidPattern);
 
-    qreal circum_diameter = diameter;
     qreal scale = getScale();
+    v3 size = size_.size;
+    qreal b = size_.focus_distance - size_.section_height;
 
-    qreal delX = (diameter + septa);
-    qreal delY = (diameter + septa);
+    // Y = 0
+    qreal size_x = x_wallangles_[0].tangent * b * 2 - x_wallangles_[0].thick_in_plane;
+    qreal size_y = size_x;
+    qreal xpos = 0;
+    qreal ypos = 0;
 
-    // 1st quadrant
-    int j = 0;
-    qreal ypos = j * delY;
+    // Center
+    QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+    sqr->setPen(pen);
+    sqr->setBrush(brush);
+    sqr->setPos(realToPixel(xpos, ypos));
+    scene->addItem(sqr);
+    sqr_list.push_back(sqr);
 
-    while (ypos - diameter / 2 < size.y / 2) {
+    for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
+        const WallAngle& wa2 = x_wallangles_[i+1];
+        const WallAngle& wa1 = x_wallangles_[i];
+        size_x = (wa2.tangent - wa1.tangent) * b - wa1.thick_in_plane;
+        xpos = xpos + size_x + wa1.thick_in_plane;
 
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
-        for (int i = 0; i < imax; i++) {
-            qreal xpos = i * delX;
+        // Right 
+        QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+        sqr->setPen(pen);
+        sqr->setBrush(brush);
+        sqr->setPos(realToPixel(xpos, ypos));
+        scene->addItem(sqr);
+        sqr_list.push_back(sqr);
 
-            qreal hex_dia = circum_diameter;
-            QGraphicsRectItem *hex = new QGraphicsRectItem(hex_dia * scale * -0.5, hex_dia * scale * -0.5, hex_dia * scale, hex_dia * scale);
-            hex->setPen(pen);
-            hex->setBrush(brush);
-            hex->setPos(realToPixel(xpos, ypos));
-            scene->addItem(hex);
-            hex_list.push_back(hex);
-        }
-        ypos = delY * (++j);
+        // Left
+        QGraphicsRectItem *sqr2 = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+        sqr2->setPen(pen);
+        sqr2->setBrush(brush);
+        sqr2->setPos(realToPixel(-xpos, ypos));
+        scene->addItem(sqr2);
+        sqr_list.push_back(sqr2);
     }
 
-    // 2nd quadrant
-    j = 0;
-    ypos = j * delY;
-    while (ypos - diameter / 2 < size.y / 2) {
+    for (int j = 0; j < y_wallangles_.size() - 1; ++j) {
+        // Set y size and position
+        const WallAngle& ywa2 = y_wallangles_[j + 1];
+        const WallAngle& ywa1 = y_wallangles_[j];
 
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
-        for (int i = 1; i < imax; i++) {
-            qreal xpos = -i * delX;
+        size_y = (ywa2.tangent - ywa1.tangent) * b - ywa1.thick_in_plane;
+        ypos = ypos + size_y + ywa1.thick_in_plane;
 
-            qreal hex_dia = circum_diameter;
-            QGraphicsRectItem *hex = new QGraphicsRectItem(hex_dia * scale * -0.5, hex_dia * scale * -0.5, hex_dia * scale, hex_dia * scale);
-            hex->setPen(pen);
-            hex->setBrush(brush);
-            hex->setPos(realToPixel(xpos, ypos));
-            scene->addItem(hex);
-            hex_list.push_back(hex);
+        /////////////////////////////////////////////////////
+        // Upper line
+        /////////////////////////////////////////////////////
+        // Initialize x size and position
+        size_x = x_wallangles_[0].tangent * b * 2 - x_wallangles_[0].thick_in_plane;
+        xpos = 0;
+
+        // Center
+        QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+        sqr->setPen(pen);
+        sqr->setBrush(brush);
+        sqr->setPos(realToPixel(xpos, ypos));
+        scene->addItem(sqr);
+        sqr_list.push_back(sqr);
+
+        for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
+            const WallAngle& wa2 = x_wallangles_[i + 1];
+            const WallAngle& wa1 = x_wallangles_[i];
+            size_x = (wa2.tangent - wa1.tangent) * b - wa1.thick_in_plane;
+            xpos = xpos + size_x + wa1.thick_in_plane;
+
+            // Right
+            QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+            sqr->setPen(pen);
+            sqr->setBrush(brush);
+            sqr->setPos(realToPixel(xpos, ypos));
+            scene->addItem(sqr);
+            sqr_list.push_back(sqr);
+
+            // Left
+            QGraphicsRectItem *sqr2 = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+            sqr2->setPen(pen);
+            sqr2->setBrush(brush);
+            sqr2->setPos(realToPixel(-xpos, ypos));
+            scene->addItem(sqr2);
+            sqr_list.push_back(sqr2);
         }
-        ypos = delY * (++j);
+
+        /////////////////////////////////////////////////////
+        // Lower line
+        /////////////////////////////////////////////////////
+        // Initialize x size and position
+        size_x = x_wallangles_[0].tangent * b * 2 - x_wallangles_[0].thick_in_plane;
+        xpos = 0;
+
+        // Center
+        QGraphicsRectItem *sqr2 = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+        sqr2->setPen(pen);
+        sqr2->setBrush(brush);
+        sqr2->setPos(realToPixel(xpos, -ypos));
+        scene->addItem(sqr2);
+        sqr_list.push_back(sqr2);
+
+        for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
+            const WallAngle& wa2 = x_wallangles_[i + 1];
+            const WallAngle& wa1 = x_wallangles_[i];
+            size_x = (wa2.tangent - wa1.tangent) * b - wa1.thick_in_plane;
+            xpos = xpos + size_x + wa1.thick_in_plane;
+
+            // Right
+            QGraphicsRectItem *sqr = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+            sqr->setPen(pen);
+            sqr->setBrush(brush);
+            sqr->setPos(realToPixel(xpos, -ypos));
+            scene->addItem(sqr);
+            sqr_list.push_back(sqr);
+
+            // Left
+            QGraphicsRectItem *sqr2 = new QGraphicsRectItem(size_x * scale * -0.5, size_y * scale * -0.5, size_x * scale, size_y * scale);
+            sqr2->setPen(pen);
+            sqr2->setBrush(brush);
+            sqr2->setPos(realToPixel(-xpos, -ypos));
+            scene->addItem(sqr2);
+            sqr_list.push_back(sqr2);
+        }
     }
 
+    //while (xpos < size.x / 2 + diameter / 2) {
+    //    QGraphicsRectItem *sqr = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
+    //    sqr->setPen(pen);
+    //    sqr->setBrush(brush);
+    //    sqr->setPos(realToPixel(xpos, ypos));
+    //    scene->addItem(sqr);
+    //    sqr_list.push_back(sqr);
 
-    // 3rd quadrant
-    j = -1;
-    ypos = j * delY;
-    while (ypos + diameter / 2 > size.y / -2) {
+    //    if (xpos != 0) {
+    //        QGraphicsRectItem *sqr1 = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
+    //        sqr1->setPen(pen);
+    //        sqr1->setBrush(brush);
+    //        sqr1->setPos(realToPixel(-xpos, ypos));
+    //        scene->addItem(sqr1);
+    //        sqr_list.push_back(sqr1);
+    //    }
 
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
-        for (int i = 1; i < imax; i++) {
-            qreal xpos = -i * delX;
+    //    // update xpos
+    //    qreal tan_theta = (xpos + diameter / 2) / b;
+    //    qreal theta = atan(tan_theta);
+    //    qreal cos_theta = cos(theta);
+    //    qreal t = septa / cos_theta;
+    //    xpos = xpos + diameter + t;
+    //}
 
-            qreal hex_dia = circum_diameter;
-            QGraphicsRectItem *hex = new QGraphicsRectItem(hex_dia * scale * -0.5, hex_dia * scale * -0.5, hex_dia * scale, hex_dia * scale);
-            hex->setPen(pen);
-            hex->setBrush(brush);
-            hex->setPos(realToPixel(xpos, ypos));
-            scene->addItem(hex);
-            hex_list.push_back(hex);
-        }
-        ypos = delY * (--j);
+    //qreal tan_theta = (ypos + diameter / 2) / b;
+    //qreal theta = atan(tan_theta);
+    //qreal cos_theta = cos(theta);
+    //qreal t = septa / cos_theta;
+
+    //ypos = ypos + diameter + t;
+
+    //while (ypos < size.y / 2 + diameter / 2) {
+    //    {
+    //        xpos = 0;
+
+    //        while (xpos < size.x / 2 + diameter / 2) {
+    //            QGraphicsRectItem *sqr = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
+    //            sqr->setPen(pen);
+    //            sqr->setBrush(brush);
+    //            sqr->setPos(realToPixel(xpos, ypos));
+    //            scene->addItem(sqr);
+    //            sqr_list.push_back(sqr);
+
+    //            if (xpos != 0) {
+    //                QGraphicsRectItem *sqr1 = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
+    //                sqr1->setPen(pen);
+    //                sqr1->setBrush(brush);
+    //                sqr1->setPos(realToPixel(-xpos, ypos));
+    //                scene->addItem(sqr1);
+    //                sqr_list.push_back(sqr1);
+    //            }
+
+    //            // update xpos
+    //            qreal tan_theta = (xpos + diameter / 2) / b;
+    //            qreal theta = atan(tan_theta);
+    //            qreal cos_theta = cos(theta);
+    //            qreal t = septa / cos_theta;
+    //            xpos = xpos + diameter + t;
+    //        }
+    //    }
+
+    //    {
+    //        xpos = 0;
+    //        while (xpos < size.x / 2 + diameter / 2) {
+    //            QGraphicsRectItem *sqr = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
+    //            sqr->setPen(pen);
+    //            sqr->setBrush(brush);
+    //            sqr->setPos(realToPixel(xpos, -ypos));
+    //            scene->addItem(sqr);
+    //            sqr_list.push_back(sqr);
+
+    //            if (xpos != 0) {
+    //                QGraphicsRectItem *sqr1 = new QGraphicsRectItem(diameter * scale * -0.5, diameter * scale * -0.5, diameter * scale, diameter * scale);
+    //                sqr1->setPen(pen);
+    //                sqr1->setBrush(brush);
+    //                sqr1->setPos(realToPixel(-xpos, -ypos));
+    //                scene->addItem(sqr1);
+    //                sqr_list.push_back(sqr1);
+    //            }
+
+    //            // update xpos
+    //            qreal tan_theta = (xpos + diameter / 2) / b;
+    //            qreal theta = atan(tan_theta);
+    //            qreal cos_theta = cos(theta);
+    //            qreal t = septa / cos_theta;
+    //            xpos = xpos + diameter + t;
+    //        }
+    //    }
+
+    //    // update ypos
+    //    qreal tan_theta = (ypos + diameter / 2) / b;
+    //    qreal theta = atan(tan_theta);
+    //    qreal cos_theta = cos(theta);
+    //    qreal t = septa / cos_theta;
+    //    ypos = ypos + diameter + t;
+    //}
+
+    return sqr_list;
+}
+
+void ShapeSquareThick::updateMousePos(QPointF point)
+{
+    
+}
+
+bool ShapeSquareThick::checkMousePointInAir(QPointF point)
+{
+    qreal h = size_.focus_distance - size_.section_height;
+    qreal x = qAbs(point.x());
+    qreal y = qAbs(point.y());
+
+    if (x > size_.size.x * 0.5 || y > size_.size.y * 0.5)
+        return false;
+
+    return checkInX(x) && checkInY(y);
+}
+
+bool ShapeSquareThick::checkInX(qreal abs_x)
+{
+    qreal h = size_.focus_distance - size_.section_height;
+
+    if (abs_x < x_wallangles_[0].tangent * h - x_wallangles_[0].thick_in_plane * 0.5) {
+        return true;
     }
 
-    // 4th quadrant
-    j = -1;
-    ypos = j * delY;
-    while (ypos + diameter / 2 > size.y / -2) {
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
-        for (int i = 0; i < imax; i++) {
-            qreal xpos = i * delX;
+    qreal xx = abs_x / h;
 
-            qreal hex_dia = circum_diameter;
-            QGraphicsRectItem *hex = new QGraphicsRectItem(hex_dia * scale * -0.5, hex_dia * scale * -0.5, hex_dia * scale, hex_dia * scale);
-            hex->setPen(pen);
-            hex->setBrush(brush);
-            hex->setPos(realToPixel(xpos, ypos));
-            scene->addItem(hex);
-            hex_list.push_back(hex);
+    for (int i = 0; i < x_wallangles_.size() - 1; ++i) {
+        const WallAngle& wa1 = x_wallangles_[i];
+        const WallAngle& wa2 = x_wallangles_[i + 1];
+
+        if (wa1.tangent <= xx && xx < wa2.tangent) {
+            if (h * wa1.tangent + 0.5 * wa1.thick_in_plane < abs_x &&
+                h * wa2.tangent - 0.5 * wa2.thick_in_plane > abs_x)
+                return true;
+            else
+                return false;
         }
-        ypos = delY * (--j);
     }
 
-    return hex_list;
+    return false;
+}
+
+bool ShapeSquareThick::checkInY(qreal abs_y)
+{
+    qreal h = size_.focus_distance - size_.section_height;
+
+    if (abs_y < y_wallangles_[0].tangent * h - y_wallangles_[0].thick_in_plane * 0.5) {
+        return true;
+    }
+
+    qreal yy = abs_y / h;
+
+    for (int i = 0; i < y_wallangles_.size() - 1; ++i) {
+        const WallAngle& wa1 = y_wallangles_[i];
+        const WallAngle& wa2 = y_wallangles_[i + 1];
+
+        if (wa1.tangent <= yy && yy < wa2.tangent) {
+            if (h * wa1.tangent + 0.5 * wa1.thick_in_plane < abs_y &&
+                h * wa2.tangent - 0.5 * wa2.thick_in_plane > abs_y)
+                return true;
+            else
+                return false;
+        }
+    }
+
+    return false;
 }

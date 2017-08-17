@@ -11,27 +11,44 @@ class QGraphicsItemGroup;
 
 namespace LCR {
 
+    struct WallAngle {
+        float tangent;
+        float thick_in_plane;
+    };
+
     class ShapeSquareThick : public SectionShape
     {
     public:
         explicit ShapeSquareThick() : SectionShape() {}
 
-        void setCollimatorSize(const v3& coll_size);
+        void setCollimatorSize(const CollimatorEx& size);
         void setParameters(double diameter, double septa, int direction);
 
         QList<QGraphicsItem*> buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag);
 
-        int type() { return 2; }
+        int type() { return 12; }
+
+    public slots:
+        void updateMousePos(QPointF point);
+        bool checkMousePointInAir(QPointF point);
+
+    private:
+        void updateAngles();
+        bool checkInX(qreal abs_x);
+        bool checkInY(qreal y);
 
     private:
         QList<QGraphicsItem*> build_horizontal(QGraphicsScene* scene);
 
     private:
-        double diameter;  // inscribed circle
-        double septa;
-        int direction;
+        //double diameter;  // inscribed circle
+        //double septa;
+        //int direction;
 
-        v3 size;
+        std::vector<WallAngle> x_wallangles_;
+        std::vector<WallAngle> y_wallangles_;
+
+        CollimatorEx size_;
     };
 };
 

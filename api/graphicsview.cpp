@@ -121,3 +121,10 @@ void GraphicsView::save(const QString& filename)
 	QPixmap pixmap(this->grab());
 	pixmap.save(filename);
 }
+
+void GraphicsView::mouseMoveEvent(QMouseEvent* move)
+{
+    QPointF mov;
+    mov = mapToScene(move->pos());
+    emit sendMousePoint(mov);
+}

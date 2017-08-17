@@ -24,7 +24,7 @@ namespace LCR {
 
         CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
 
-        void setCollimatorSize(const v3& coll_size, double ratio);
+        void setCollimatorSize(const CollimatorEx& size, double ratio);
         void setParameters(double diameter, double septa, int direction);
 
         void buildHoles();
@@ -33,10 +33,16 @@ namespace LCR {
 
         bool changeShape(int shape);
 
+    signals:
+        void pointInCheck(QPointF, bool);
+
     private:
         void build_horizontal();
         void build_vertical();
         void draw_outside();
+
+    private slots:
+        void updateMousePos(QPointF);
 
     private:
         SectionShape* shaper_;
@@ -57,7 +63,7 @@ namespace LCR {
         double septa;
         int direction;
 
-        v3 size;
+        v3 size_;
         v3 shrink_size_;
     };
 

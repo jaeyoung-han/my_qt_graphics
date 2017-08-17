@@ -6,9 +6,9 @@
 using namespace LCR;
 using namespace MQGAPI;
 
-void SquareShape::setCollimatorSize(const v3& coll_size)
+void SquareShape::setCollimatorSize(const CollimatorEx& size)
 {
-    size = coll_size;
+    size_ = size;
 }
 
 void SquareShape::setParameters(double _diameter, double _septa, int _direction)
@@ -44,9 +44,9 @@ QList<QGraphicsItem*> SquareShape::build_horizontal(QGraphicsScene* scene)
     int j = 0;
     qreal ypos = j * delY;
 
-    while (ypos - diameter / 2 < size.y / 2) {
+    while (ypos - diameter / 2 < size_.size.y / 2) {
 
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
+        int imax = qCeil((size_.size.x / 2 + circum_diameter / 2) / delX);
         for (int i = 0; i < imax; i++) {
             qreal xpos = i * delX;
 
@@ -64,9 +64,9 @@ QList<QGraphicsItem*> SquareShape::build_horizontal(QGraphicsScene* scene)
     // 2nd quadrant
     j = 0;
     ypos = j * delY;
-    while (ypos - diameter / 2 < size.y / 2) {
+    while (ypos - diameter / 2 < size_.size.y / 2) {
 
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
+        int imax = qCeil((size_.size.x / 2 + circum_diameter / 2) / delX);
         for (int i = 1; i < imax; i++) {
             qreal xpos = -i * delX;
 
@@ -85,9 +85,9 @@ QList<QGraphicsItem*> SquareShape::build_horizontal(QGraphicsScene* scene)
     // 3rd quadrant
     j = -1;
     ypos = j * delY;
-    while (ypos + diameter / 2 > size.y / -2) {
+    while (ypos + diameter / 2 > size_.size.y / -2) {
 
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
+        int imax = qCeil((size_.size.x / 2 + circum_diameter / 2) / delX);
         for (int i = 1; i < imax; i++) {
             qreal xpos = -i * delX;
 
@@ -105,8 +105,8 @@ QList<QGraphicsItem*> SquareShape::build_horizontal(QGraphicsScene* scene)
     // 4th quadrant
     j = -1;
     ypos = j * delY;
-    while (ypos + diameter / 2 > size.y / -2) {
-        int imax = qCeil((size.x / 2 + circum_diameter / 2) / delX);
+    while (ypos + diameter / 2 > size_.size.y / -2) {
+        int imax = qCeil((size_.size.x / 2 + circum_diameter / 2) / delX);
         for (int i = 0; i < imax; i++) {
             qreal xpos = i * delX;
 
@@ -122,4 +122,35 @@ QList<QGraphicsItem*> SquareShape::build_horizontal(QGraphicsScene* scene)
     }
 
     return hex_list;
+}
+
+bool SquareShape::checkMousePointInAir(QPointF point)
+{
+    qreal h = size_.focus_distance - size_.section_height;
+    qreal x = qAbs(point.x());
+    qreal y = qAbs(point.y());
+
+    if (x > size_.size.x * 0.5 || y > size_.size.y * 0.5)
+        return false;
+
+    QPointF center = getNearestRectangle(point);
+    return checkPointInAir(point, center);
+}
+
+QPointF SquareShape::getNearestRectangle(QPointF point)
+{
+    qreal w = diameter + septa;
+
+    int i = (int)floor((point.x() + 0.5 * w) / w);
+    int j = (int)floor((point.y() + 0.5 * w) / w);
+
+    return QPointF(i * w, j * w);
+}
+
+bool SquareShape::checkPointInAir(QPointF point, QPointF rect_center)
+{
+    qreal x = qAbs(point.x() - rect_center.x());
+    qreal y = qAbs(point.y() - rect_center.y());
+
+    return (x < diameter * 0.5) && (y < diameter * 0.5);
 }

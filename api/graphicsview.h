@@ -27,12 +27,16 @@ namespace MQGAPI {
 
 		void setBackgroundColor(const QColor& color);
 
+    signals:
+        void sendMousePoint(QPointF point);
+
 	public slots:
 		void save(const QString& filename);
 
 	protected:
 		virtual void initialize();
 		virtual void resizeEvent(QResizeEvent* event);
+        virtual void mouseMoveEvent(QMouseEvent* move);
 
 		void resetAxis();
 

@@ -68,6 +68,10 @@ MainWindow::MainWindow()
 	restoreState(settings.value("state").toByteArray());
 
 	parameterUpdated();
+
+    connect(gview_top, SIGNAL(pointInCheck(QPointF, bool)), this, SLOT(updatePointInCheck(QPointF, bool)));
+    connect(gview_section, SIGNAL(pointInCheck(QPointF, bool)), this, SLOT(updatePointInCheck(QPointF, bool)));
+    connect(gview_bottom, SIGNAL(pointInCheck(QPointF, bool)), this, SLOT(updatePointInCheck(QPointF, bool)));
 }
 
 void MainWindow::createActions()
@@ -182,13 +186,17 @@ void MainWindow::parameterUpdated()
 
     changeShape(collimator.shape);
 
-	gview_bottom->setCollimatorSize(collimator.size, 1);
+    double sec_height = collimator.section_height;
+    collimator.section_height = 0;
+	gview_bottom->setCollimatorSize(collimator, 1);
 
 	double ratio = (collimator.focus_distance - collimator.size.z) / collimator.focus_distance;
-	gview_top->setCollimatorSize(collimator.size, ratio);
+    collimator.section_height = collimator.size.z;
+    gview_top->setCollimatorSize(collimator, ratio);
 
 	ratio = (collimator.focus_distance - collimator.section_height) / collimator.focus_distance;
-	gview_section->setCollimatorSize(collimator.size, ratio);
+    collimator.section_height = sec_height;
+    gview_section->setCollimatorSize(collimator, ratio);
 
 	gview_umbra->setData(collimator);
 
@@ -224,7 +232,7 @@ void MainWindow::sectionUpdated()
 {
 	collimator = dockCollimator->getData();
 	double ratio =(collimator.focus_distance - collimator.section_height)/ collimator.focus_distance;
-	gview_section->setCollimatorSize(collimator.size, ratio);
+	gview_section->setCollimatorSize(collimator, ratio);
 
 	// 1. determine diameters
 	double section_diameter = collimator.diameter[1]
@@ -264,6 +272,11 @@ void MainWindow::updateUmbra()
 
 	collimator.umbra_width = ur.x() - ul.x();
 	collimator.penumbra_width = pr.x() - pl.x();
+}
+
+void MainWindow::updatePointInCheck(QPointF pos, bool res)
+{
+    statusBar()->showMessage(tr("(%1, %2) %3").arg(QString::number(pos.x(), 'f', 2)).arg(QString::number(pos.y(), 'f', 2)).arg(res));
 }
 
 void MainWindow::save()

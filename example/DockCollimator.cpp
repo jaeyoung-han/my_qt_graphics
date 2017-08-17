@@ -84,17 +84,17 @@ void DockCollimator::initialize()
 	// Overall size (L, W, H), focus
 	dsb_length = new DoubleSpinBoxSliderWidget(tr("Lengh (mm): "), 100, 10, 1000);
 	dsb_length->setDecimals(0);
-	dsb_length->setSingleStep(1);
+	dsb_length->setSingleStep(10);
 	dsb_length->setValue(data.size.x);
 	dsb_length->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-	dsb_width = new DoubleSpinBoxSliderWidget(tr("Width (mm): "), 100, 10, 100);
+	dsb_width = new DoubleSpinBoxSliderWidget(tr("Width (mm): "), 100, 10, 1000);
 	dsb_width->setDecimals(0);
-	dsb_width->setSingleStep(1);
+	dsb_width->setSingleStep(10);
 	dsb_width->setValue(data.size.y);
 	dsb_width->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-	dsb_height = new DoubleSpinBoxSliderWidget(tr("Height (mm): "), 100, 10, 400);
+	dsb_height = new DoubleSpinBoxSliderWidget(tr("Height (mm): "), 100, 10, 1000);
 	dsb_height->setDecimals(0);
 	dsb_height->setSingleStep(10);
 	dsb_height->setValue(data.size.z);
@@ -168,15 +168,15 @@ void DockCollimator::initialize()
 	vblayout3->addLayout(hblayout1);
 	vblayout3->addWidget(cb_conv_div_mix);
 
-	QGroupBox* gb_en = new QGroupBox(tr("Bottom Plane (X-ray side)"));
-	gb_en->setLayout(vblayout3);
+    gb_bottom_plane_ = new QGroupBox(tr("Bottom Plane (X-ray side)"));
+    gb_bottom_plane_->setLayout(vblayout3);
 
 
 
 	// MIDDLE SECTION
 	dsb_section_height = new DoubleSpinBoxSliderWidget(tr("Section Height (mm): "), 100, 0, 10);
 	dsb_section_height->setDecimals(0);
-	dsb_section_height->setSingleStep(1);
+	dsb_section_height->setSingleStep(5);
 	dsb_section_height->setValue(data.section_height);
 	dsb_section_height->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
@@ -226,8 +226,8 @@ void DockCollimator::initialize()
 	grid_info->addWidget(lb_x_side_open_area, 0, 1);
 	grid_info->addWidget(lb_x_side_hole_num, 1, 1);
 
-	QGroupBox* gb_info = new QGroupBox(tr("Info"));
-	gb_info->setLayout(grid_info);
+    gb_info_ = new QGroupBox(tr("Info"));
+    gb_info_->setLayout(grid_info);
 
 
 
@@ -271,8 +271,8 @@ void DockCollimator::initialize()
 	vblayout5->addLayout(hblayout);
 	vblayout5->addWidget(umbra_widget);
 
-	QGroupBox* gb_umbra = new QGroupBox(tr("Umbra"));
-	gb_umbra->setLayout(vblayout5);
+    gb_umbra_ = new QGroupBox(tr("Umbra"));
+    gb_umbra_->setLayout(vblayout5);
 
 	// Main
 	QScrollArea* sc = new QScrollArea();
@@ -284,9 +284,10 @@ void DockCollimator::initialize()
 	vbLayout->addWidget(gb_coll);
 	vbLayout->addWidget(gb_ex);
 	vbLayout->addWidget(gb_section);
-	vbLayout->addWidget(gb_en);
-	vbLayout->addWidget(gb_info);
-	vbLayout->addWidget(gb_umbra);
+	vbLayout->addWidget(gb_bottom_plane_);
+	vbLayout->addWidget(gb_info_);
+	vbLayout->addWidget(gb_umbra_);
+    vbLayout->addStretch();
 
     connect(rb_shape_hexagon, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
     connect(rb_shape_square, SIGNAL(clicked(bool)), this, SLOT(parameterUpdated()));
@@ -321,14 +322,23 @@ void DockCollimator::update(const CollimatorEx& new_data)
     case 1:
         rb_shape_hexagon->setChecked(true);
         gb_dir->setVisible(true);
+        gb_bottom_plane_->setVisible(true);
+        gb_info_->setVisible(true);
+        gb_umbra_->setVisible(true);
         break;
     case 2:
         rb_shape_square->setChecked(true);
         gb_dir->setVisible(false);
+        gb_bottom_plane_->setVisible(true);
+        gb_info_->setVisible(true);
+        gb_umbra_->setVisible(true);
         break;
     case 12:
         rb_shape_square_thickness->setChecked(true);
         gb_dir->setVisible(false);
+        gb_bottom_plane_->setVisible(false);
+        gb_info_->setVisible(false);
+        gb_umbra_->setVisible(false);
         break;
     }
 
@@ -404,14 +414,23 @@ void DockCollimator::parameterUpdated()
     if (rb_shape_hexagon->isChecked()) {
         data.shape = 1;
         gb_dir->setVisible(true);
+        gb_bottom_plane_->setVisible(true);
+        gb_info_->setVisible(true);
+        gb_umbra_->setVisible(true);
     }
     else if (rb_shape_square->isChecked()) {
         data.shape = 2;
         gb_dir->setVisible(false);
+        gb_bottom_plane_->setVisible(true);
+        gb_info_->setVisible(true);
+        gb_umbra_->setVisible(true);
     }
     else if (rb_shape_square_thickness->isChecked()) {
         data.shape = 12;
         gb_dir->setVisible(false);
+        gb_bottom_plane_->setVisible(false);
+        gb_info_->setVisible(false);
+        gb_umbra_->setVisible(false);
     }
     data.direction = rb_horizontal->isChecked() ? 0 : 1;
 

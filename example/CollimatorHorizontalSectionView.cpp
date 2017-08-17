@@ -66,6 +66,10 @@ CollimatorHorizontalSectionView::CollimatorHorizontalSectionView(double ins_diam
     scene()->addItem(shrink_rect);
 
     changeShape(SQUARE);
+
+    setMouseTracking(true);
+
+    connect(this, SIGNAL(sendMousePoint(QPointF)), this, SLOT(updateMousePos(QPointF)));
 }
 
 bool CollimatorHorizontalSectionView::changeShape(int shape)
@@ -89,13 +93,13 @@ bool CollimatorHorizontalSectionView::changeShape(int shape)
     return true;
 }
 
-void CollimatorHorizontalSectionView::setCollimatorSize(const v3& coll_size, double ratio)
+void CollimatorHorizontalSectionView::setCollimatorSize(const CollimatorEx& size, double ratio)
 {
-    size = coll_size;
-    shrink_size_.x = coll_size.x * ratio;
-    shrink_size_.y = coll_size.y * ratio;
-    shrink_size_.z = coll_size.z;
-    shaper_->setCollimatorSize(coll_size);
+    size_ = size.size;
+    shrink_size_.x = size.size.x * ratio;
+    shrink_size_.y = size.size.y * ratio;
+    shrink_size_.z = size.size.z;
+    shaper_->setCollimatorSize(size);
 }
 
 void CollimatorHorizontalSectionView::setParameters(double _diameter, double _septa, int _direction)
@@ -118,8 +122,16 @@ void CollimatorHorizontalSectionView::updateBase()
         base_rect->setBrush(brush);
     }
 
-    base_rect->setRect(size.x * getScale() * -0.5, size.y * getScale() * -0.5, size.x * getScale(), size.y * getScale());
+    base_rect->setRect(size_.x * getScale() * -0.5, size_.y * getScale() * -0.5, size_.x * getScale(), size_.y * getScale());
     base_rect->setPos(realToPixel(0, 0));
+}
+
+void CollimatorHorizontalSectionView::updateMousePos(QPointF point)
+{
+//    shaper_->updateMousePos(point);
+    QPointF pos = pixelToReal(point);
+    bool res = shaper_->checkMousePointInAir(pos);
+    emit pointInCheck(pos, res);
 }
 
 void CollimatorHorizontalSectionView::buildHoles()

@@ -45,6 +45,7 @@ private:
 	QRadioButton* rb_vertical;
     QGroupBox* gb_dir;
 
+    QGroupBox* gb_bottom_plane_;
 	LCR::DoubleSpinBoxSliderWidget* dsb_length;
 	LCR::DoubleSpinBoxSliderWidget* dsb_width;
 	LCR::DoubleSpinBoxSliderWidget* dsb_height;
@@ -62,12 +63,15 @@ private:
 
 	QLabel* lb_x_side_open_area;
 	QLabel* lb_x_side_hole_num;
+    QGroupBox* gb_info_;
 
 	QLabel* lb_umbra;
 	QLabel* lb_mid_penumbra;
 	QLabel* lb_penumbra;
 
 	LCR::UmbraWidget* umbra_widget;
+
+    QGroupBox* gb_umbra_;
 
 	LCR::CollimatorEx data;
 };
