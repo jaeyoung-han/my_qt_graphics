@@ -36,16 +36,21 @@ MainWindow::MainWindow()
 	splitter->setOrientation(Qt::Vertical);
 
 	// Vertical Sectional View
-	gview_umbra = new UmbraView();
-	gview_umbra->setOrigin(200, 500);
-	gview_umbra->setScale(2);
+	gview_umbra_long = new UmbraView();
+	gview_umbra_long->setOrigin(200, 500);
+	gview_umbra_long->setScale(2);
 
-	// Main Splitter
+    gview_umbra_tran = new UmbraView();
+    gview_umbra_tran->setOrigin(200, 500);
+    gview_umbra_tran->setScale(2);
+    
+    // Main Splitter
 	QSplitter* main_splitter = new QSplitter();
 
 	main_splitter->addWidget(splitter);
-	main_splitter->addWidget(gview_umbra);
-	main_splitter->setOrientation(Qt::Horizontal);
+	main_splitter->addWidget(gview_umbra_long);
+    main_splitter->addWidget(gview_umbra_tran);
+    main_splitter->setOrientation(Qt::Horizontal);
 
 
 	// Set Main widget
@@ -167,7 +172,8 @@ void MainWindow::parameterUpdated()
     double diameters[2];
     double septas[2];
 
-	gview_umbra->setData(collimator);
+	gview_umbra_long->setData(collimator, 0);
+    gview_umbra_tran->setData(collimator, 1);
 
     diameters[0] = collimator.hole_ex.diameter_long;
     diameters[1] = collimator.hole_ex.diameter_tran;

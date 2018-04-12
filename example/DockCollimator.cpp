@@ -34,8 +34,8 @@ void DockCollimator::initialize()
 {
 	setObjectName("DockCollimator");
 
-	int w_label = 108;
-	int w_slider = 108;
+	int w_label = 96;
+	int w_slider = 120;
 	int w_spinbox = 64;
 
     rb_shape_hexagon = new QRadioButton(tr("Hexagon"));
@@ -49,6 +49,7 @@ void DockCollimator::initialize()
     hb_shape->addWidget(rb_shape_square_thickness);
 
     QGroupBox* gb_shape = new QGroupBox(tr("Hole Shape"));
+    gb_shape->setStyleSheet("QGroupBox { font-weight: bold; } ");
     gb_shape->setLayout(hb_shape);
     gb_shape->setEnabled(false);
 
@@ -65,19 +66,19 @@ void DockCollimator::initialize()
     gb_dir->setEnabled(true);
 
 	// Overall size (L, W, H), focus
-	dsb_length = new DoubleSpinBoxSliderWidget(tr("Lengh (mm): "), 100, 10, 1000);
+	dsb_length = new DoubleSpinBoxSliderWidget(tr("Lengh: "), 100, 10, 1000);
 	dsb_length->setDecimals(0);
 	dsb_length->setSingleStep(10);
 	dsb_length->setValue(data.size.x);
 	dsb_length->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-	dsb_width = new DoubleSpinBoxSliderWidget(tr("Width (mm): "), 100, 10, 1000);
+	dsb_width = new DoubleSpinBoxSliderWidget(tr("Width: "), 100, 10, 1000);
 	dsb_width->setDecimals(0);
 	dsb_width->setSingleStep(10);
 	dsb_width->setValue(data.size.y);
 	dsb_width->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-	dsb_height = new DoubleSpinBoxSliderWidget(tr("Height (mm): "), 100, 10, 1000);
+	dsb_height = new DoubleSpinBoxSliderWidget(tr("Height: "), 100, 10, 1000);
 	dsb_height->setDecimals(0);
 	dsb_height->setSingleStep(10);
 	dsb_height->setValue(data.size.z);
@@ -89,6 +90,7 @@ void DockCollimator::initialize()
 	vblayout1->addWidget(dsb_height);
 
 	QGroupBox* gb_dimension = new QGroupBox(tr("Dimension"));
+    gb_dimension->setStyleSheet("QGroupBox { font-weight: bold; } ");
     gb_dimension->setLayout(vblayout1);
 
 
@@ -102,25 +104,25 @@ void DockCollimator::initialize()
     hbl_select->addWidget(cb_iso_focus);
 
     // Longitudinal
-    dsb_focus_coll_l = new DoubleSpinBoxSliderWidget(tr("Collimator focus (mm): "), 101, -1000, 1000);
+    dsb_focus_coll_l = new DoubleSpinBoxSliderWidget(tr("Collimator focus: "), 101, -1000, 1000);
     dsb_focus_coll_l->setDecimals(0);
     dsb_focus_coll_l->setSingleStep(10);
     dsb_focus_coll_l->setValue(data.focus_coll_long);
     dsb_focus_coll_l->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-    dsb_focus_hole_l = new DoubleSpinBoxSliderWidget(tr("Hole focus (mm): "), 201, -1000, 1000);
+    dsb_focus_hole_l = new DoubleSpinBoxSliderWidget(tr("Hole focus: "), 201, -1000, 1000);
     dsb_focus_hole_l->setDecimals(0);
     dsb_focus_hole_l->setSingleStep(10);
     dsb_focus_hole_l->setValue(data.focus_hole_long);
     dsb_focus_hole_l->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-    dsb_diameter_l = new DoubleSpinBoxSliderWidget(tr("Diameter (mm): "), 100, 0.1, 10);
+    dsb_diameter_l = new DoubleSpinBoxSliderWidget(tr("Diameter: "), 100, 0.1, 10);
     dsb_diameter_l->setDecimals(3);
     dsb_diameter_l->setSingleStep(0.1);
     dsb_diameter_l->setValue(data.hole_ex.diameter_long);
     dsb_diameter_l->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-    dsb_septa_l = new DoubleSpinBoxSliderWidget(tr("Thickness (mm): "), 100, 0.1, 10);
+    dsb_septa_l = new DoubleSpinBoxSliderWidget(tr("Thickness: "), 100, 0.1, 10);
     dsb_septa_l->setDecimals(3);
     dsb_septa_l->setSingleStep(0.1);
     dsb_septa_l->setValue(data.hole_ex.septa_long);
@@ -136,25 +138,25 @@ void DockCollimator::initialize()
     gb_longitudinal->setLayout(vbl_longitudinal);
 
 
-    dsb_focus_coll_w = new DoubleSpinBoxSliderWidget(tr("Collimator focus (mm): "), 201, -1000, 1000);
+    dsb_focus_coll_w = new DoubleSpinBoxSliderWidget(tr("Collimator focus: "), 201, -1000, 1000);
     dsb_focus_coll_w->setDecimals(0);
     dsb_focus_coll_w->setSingleStep(10);
     dsb_focus_coll_w->setValue(data.focus_coll_tran);
     dsb_focus_coll_w->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-    dsb_focus_hole_w = new DoubleSpinBoxSliderWidget(tr("Hole focus (mm): "), 201, -1000, 1000);
+    dsb_focus_hole_w = new DoubleSpinBoxSliderWidget(tr("Hole focus: "), 201, -1000, 1000);
     dsb_focus_hole_w->setDecimals(0);
     dsb_focus_hole_w->setSingleStep(10);
     dsb_focus_hole_w->setValue(data.focus_hole_tran);
     dsb_focus_hole_w->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-    dsb_diameter_w = new DoubleSpinBoxSliderWidget(tr("Diameter (mm): "), 100, 0.1, 10);
+    dsb_diameter_w = new DoubleSpinBoxSliderWidget(tr("Diameter: "), 100, 0.1, 10);
     dsb_diameter_w->setDecimals(3);
     dsb_diameter_w->setSingleStep(0.1);
     dsb_diameter_w->setValue(data.hole_ex.diameter_tran);
     dsb_diameter_w->setItemMinimumWidth(w_label, w_slider, w_spinbox);
 
-    dsb_septa_w = new DoubleSpinBoxSliderWidget(tr("Thickness (mm): "), 100, 0.1, 10);
+    dsb_septa_w = new DoubleSpinBoxSliderWidget(tr("Thickness: "), 100, 0.1, 10);
     dsb_septa_w->setDecimals(3);
     dsb_septa_w->setSingleStep(0.1);
     dsb_septa_w->setValue(data.hole_ex.septa_tran);
@@ -174,6 +176,7 @@ void DockCollimator::initialize()
     vbl_exit->addWidget(gb_longitudinal);
     vbl_exit->addWidget(gb_transverse);
     QGroupBox* gb_exit = new QGroupBox(tr("Exit Plane"));
+    gb_exit->setStyleSheet("QGroupBox { font-weight: bold; } ");
     gb_exit->setLayout(vbl_exit);
 
 	// X-RAY SIDE
@@ -213,13 +216,13 @@ void DockCollimator::initialize()
 	cb_conv_div_mix->setChecked(false);
 
     QHBoxLayout* hblayout0 = new QHBoxLayout();
-    hblayout0->addWidget(newLabel(tr("Diameter (mm): "), w_label));
+    hblayout0->addWidget(newLabel(tr("Diameter: "), w_label));
     hblayout0->addStretch();
     hblayout0->addWidget(lb_en_diameter_long);
     hblayout0->addWidget(lb_en_diameter_tran);
     
     QHBoxLayout* hblayout1 = new QHBoxLayout();
-	hblayout1->addWidget(newLabel(tr("Thickness (mm): "), w_label));
+	hblayout1->addWidget(newLabel(tr("Thickness: "), w_label));
 	hblayout1->addStretch();
 	hblayout1->addWidget(lb_en_septa_long);
     hblayout1->addWidget(lb_en_septa_tran);
@@ -229,13 +232,14 @@ void DockCollimator::initialize()
 	vblayout3->addLayout(hblayout1);
 //	vblayout3->addWidget(cb_conv_div_mix);
 
-    gb_bottom_plane_ = new QGroupBox(tr("Entrance Plane (X-ray side)"));
+    gb_bottom_plane_ = new QGroupBox(tr("Entrance Plane"));
+    gb_bottom_plane_->setStyleSheet("QGroupBox { font-weight: bold; } ");
     gb_bottom_plane_->setLayout(vblayout3);
 
 
 
 	// MIDDLE SECTION
-	dsb_section_height = new DoubleSpinBoxSliderWidget(tr("Section Height (mm): "), 100, 0, 10);
+	dsb_section_height = new DoubleSpinBoxSliderWidget(tr("Section Height: "), 100, 0, 10);
 	dsb_section_height->setDecimals(0);
 	dsb_section_height->setSingleStep(1);
 	dsb_section_height->setValue(data.hole_sec.z);
@@ -270,13 +274,13 @@ void DockCollimator::initialize()
     lb_sec_septa_tran->setLineWidth(1);
 
 	QHBoxLayout* hblayout2 = new QHBoxLayout();
-	hblayout2->addWidget(newLabel(tr("Diameter (mm): "), w_label));
+	hblayout2->addWidget(newLabel(tr("Diameter: "), w_label));
 	hblayout2->addStretch();
     hblayout2->addWidget(lb_sec_diameter_long);
     hblayout2->addWidget(lb_sec_diameter_tran);
 
 	QHBoxLayout* hblayout3 = new QHBoxLayout();
-	hblayout3->addWidget(newLabel(tr("Thickness (mm): "), w_label));
+	hblayout3->addWidget(newLabel(tr("Thickness: "), w_label));
 	hblayout3->addStretch();
 	hblayout3->addWidget(lb_sec_septa_long);
     hblayout3->addWidget(lb_sec_septa_tran);
@@ -287,12 +291,12 @@ void DockCollimator::initialize()
 	vblayout4->addLayout(hblayout3);
 
 	QGroupBox* gb_section = new QGroupBox(tr("Mid Plane"));
-	gb_section->setLayout(vblayout4);
+    gb_section->setLayout(vblayout4);
 
 
 
 	// INFO
-    dsb_anode_depth = new DoubleSpinBoxSliderWidget(tr("Anode depth (mm): "), 100, 0, 100);
+    dsb_anode_depth = new DoubleSpinBoxSliderWidget(tr("Anode depth: "), 100, 0, 100);
     dsb_anode_depth->setDecimals(1);
     dsb_anode_depth->setSingleStep(0.1);
     dsb_anode_depth->setValue(41.7);
@@ -314,7 +318,7 @@ void DockCollimator::initialize()
     lb_anode_diameter_tran->setLineWidth(1);
     
     QHBoxLayout* hblayout4 = new QHBoxLayout();
-    hblayout4->addWidget(newLabel(tr("Diameter (mm): "), w_label));
+    hblayout4->addWidget(newLabel(tr("Diameter: "), w_label));
     hblayout4->addStretch();
     hblayout4->addWidget(lb_anode_diameter_long);
     hblayout4->addWidget(lb_anode_diameter_tran);
@@ -332,13 +336,15 @@ void DockCollimator::initialize()
 	lb_x_side_hole_num->setMinimumHeight(22);
 
 	QGridLayout* grid_info = new QGridLayout();
-    grid_info->addWidget(gb_anode, 0, 0, 1, 2);
-	grid_info->addWidget(newLabel(tr("Open Area Ratio: "), w_label), 1, 0);
-	grid_info->addWidget(newLabel(tr("# of holes per cm2: "), w_label), 2, 0);
-	grid_info->addWidget(lb_x_side_open_area, 1, 1);
-	grid_info->addWidget(lb_x_side_hole_num, 2, 1);
+    grid_info->addWidget(gb_section, 0, 0, 1, 2);
+    grid_info->addWidget(gb_anode, 1, 0, 1, 2);
+	grid_info->addWidget(newLabel(tr("Open Area Ratio: "), w_label), 2, 0);
+	grid_info->addWidget(newLabel(tr("# of holes per cm2: "), w_label), 3, 0);
+	grid_info->addWidget(lb_x_side_open_area, 2, 1);
+	grid_info->addWidget(lb_x_side_hole_num, 3, 1);
 
     gb_info_ = new QGroupBox(tr("Info"));
+    gb_info_->setStyleSheet("QGroupBox { font-weight: bold; } ");
     gb_info_->setLayout(grid_info);
 
 
@@ -384,6 +390,7 @@ void DockCollimator::initialize()
 	vblayout5->addWidget(umbra_widget);
 
     gb_umbra_ = new QGroupBox(tr("Umbra"));
+    gb_umbra_->setStyleSheet("QGroupBox { font-weight: bold; } ");
     gb_umbra_->setLayout(vblayout5);
 
 	// Main
@@ -395,13 +402,16 @@ void DockCollimator::initialize()
     sc->setWidget(widget);
     sc->setWidgetResizable(true);
 
+    QLabel* lbl_unit = new QLabel(tr("Unit: mm"));
+    lbl_unit->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+
 	vbLayout->setSizeConstraint(QLayout::SetMinAndMaxSize);
+    vbLayout->addWidget(lbl_unit);
     vbLayout->addWidget(gb_shape);
 	vbLayout->addWidget(gb_dir);
 	vbLayout->addWidget(gb_dimension);
     vbLayout->addWidget(gb_exit);
 	vbLayout->addWidget(gb_bottom_plane_);
-    vbLayout->addWidget(gb_section);
     vbLayout->addWidget(gb_info_);
 	vbLayout->addWidget(gb_umbra_);
     vbLayout->addStretch();

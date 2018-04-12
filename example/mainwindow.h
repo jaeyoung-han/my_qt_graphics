@@ -51,8 +51,9 @@ private:
 	LCR::CollimatorHorizontalSectionView* gview_top;
 	LCR::CollimatorHorizontalSectionView* gview_section;
 	LCR::CollimatorHorizontalSectionView* gview_bottom;
-	LCR::CollimatorVerticalSectionView* gview_vertical;
-	LCR::UmbraView* gview_umbra;
+
+    LCR::UmbraView* gview_umbra_long;
+    LCR::UmbraView* gview_umbra_tran;
 
 	DockCollimator* dockCollimator;
 

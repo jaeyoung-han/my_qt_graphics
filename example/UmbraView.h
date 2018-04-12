@@ -14,7 +14,7 @@ namespace LCR {
 		virtual ~UmbraView();
 
 		void update();
-		void setData(const Collimator& newData);
+		void setData(const Collimator& newData, int type = 0);
 
 		const Collimator& getData() const {
 			return data;
@@ -62,7 +62,12 @@ namespace LCR {
 		QGraphicsPolygonItem* block2;
 		QGraphicsPolygonItem* block3;
 		QGraphicsPolygonItem* block4;
-	};
+
+        double diameter_en, septa_en;
+        double diameter_ex, septa_ex;
+        double focus_coll, focus_hole;
+        double coll_height;
+    };
 
 };
 

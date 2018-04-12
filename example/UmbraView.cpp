@@ -109,10 +109,30 @@ UmbraView::~UmbraView()
 {
 }
 
-void UmbraView::setData(const Collimator& newData)
+void UmbraView::setData(const Collimator& newData, int type)
 {
 	data = newData;
-	update();
+
+    coll_height = newData.size.z;
+
+    if (type == 0) {
+        diameter_en = newData.hole_en.diameter_long;
+        diameter_ex = newData.hole_ex.diameter_long;
+        septa_en = newData.hole_en.diameter_tran;
+        septa_ex = newData.hole_ex.diameter_tran;
+        focus_coll = newData.focus_coll_long;
+        focus_hole = newData.focus_hole_long;
+    }
+    else {
+        diameter_en = newData.hole_en.diameter_tran;
+        diameter_ex = newData.hole_ex.diameter_tran;
+        septa_en = newData.hole_en.diameter_tran;
+        septa_ex = newData.hole_ex.diameter_tran;
+        focus_coll = newData.focus_coll_tran;
+        focus_hole = newData.focus_hole_tran;
+    }
+
+    update();
 }
 
 
@@ -124,10 +144,10 @@ void UmbraView::update()
 
 void UmbraView::drawVerticalUmbra()
 {
-	QPointF tl(data.hole_ex.diameter_long * -0.5, data.size.z);
-	QPointF tr(data.hole_ex.diameter_long *  0.5, data.size.z);
-	QPointF bl(data.hole_en.diameter_long * -0.5, 0);
-	QPointF br(data.hole_en.diameter_long *  0.5, 0);
+	QPointF tl(diameter_ex * -0.5, coll_height);
+	QPointF tr(diameter_ex *  0.5, coll_height);
+	QPointF bl(diameter_en * -0.5, 0);
+	QPointF br(diameter_en *  0.5, 0);
 
 	QRectF rect;
 	QLineF line;
@@ -144,32 +164,32 @@ void UmbraView::drawVerticalUmbra()
 
 
 	// Umbra
-	x = getX(data.focus_coll_long, tl, bl);
-	QPointF ul(x, data.focus_coll_long);
-	x = getX(data.focus_coll_long, tr, br);
-	QPointF ur(x, data.focus_coll_long);
+	x = getX(focus_coll, tl, bl);
+	QPointF ul(x, focus_coll);
+	x = getX(focus_coll, tr, br);
+	QPointF ur(x, focus_coll);
 
-	x = getX(data.focus_coll_long, tl, br);
-	QPointF pl(x, data.focus_coll_long);
-	x = getX(data.focus_coll_long, tr, bl);
-	QPointF pr(x, data.focus_coll_long);
+	x = getX(focus_coll, tl, br);
+	QPointF pl(x, focus_coll);
+	x = getX(focus_coll, tr, bl);
+	QPointF pr(x, focus_coll);
 
 	line.setPoints(realToPixel(pl), realToPixel(pr));
 	detection_line->setLine(line);
 
 	x = qAbs(pl.x() - pr.x()) * 0.5;
-	rect.setBottomLeft(realToPixel(-x, data.focus_coll_long - x));
-	rect.setTopRight(realToPixel(x, data.focus_coll_long + x));
+	rect.setBottomLeft(realToPixel(-x, focus_coll - x));
+	rect.setTopRight(realToPixel(x, focus_coll + x));
 	penumbra_circle->setRect(rect);
 
 	x = qAbs(ul.x() - ur.x()) * 0.5;
-	rect.setBottomLeft(realToPixel(-x, data.focus_coll_long - x));
-	rect.setTopRight(realToPixel(x, data.focus_coll_long + x));
+	rect.setBottomLeft(realToPixel(-x, focus_coll - x));
+	rect.setTopRight(realToPixel(x, focus_coll + x));
 	umbra_circle->setRect(rect);
 
 	x = (qAbs(ul.x() - ur.x()) * 0.5 + qAbs(pl.x() - pr.x()) * 0.5) * 0.5;
-	rect.setBottomLeft(realToPixel(-x, data.focus_coll_long - x));
-	rect.setTopRight(realToPixel(x, data.focus_coll_long + x));
+	rect.setBottomLeft(realToPixel(-x, focus_coll - x));
+	rect.setTopRight(realToPixel(x, focus_coll + x));
 	middle_circle->setRect(rect);
 
 
@@ -204,26 +224,26 @@ QPolygonF UmbraView::buildPolygon(const QPointF& top_center, qreal top_diameter,
 void UmbraView::drawVerticalSection()
 {
 	// block center
-	QPointF t_center(0, data.size.z);
+	QPointF t_center(0, coll_height);
 	QPointF b_center(0, 0);
 
-	QPolygonF polygon = buildPolygon(t_center, data.hole_ex.diameter_long, b_center, data.hole_en.diameter_long);
+	QPolygonF polygon = buildPolygon(t_center, diameter_ex, b_center, diameter_en);
 
 	block1->setPolygon(polygon);
 
 	// block right
-	t_center.setX(data.hole_ex.diameter_long + data.hole_ex.septa_long);
-	b_center.setX(data.hole_en.diameter_long + data.hole_ex.septa_long);
+	t_center.setX(diameter_ex + septa_ex);
+	b_center.setX(diameter_en + septa_ex);
 
-	polygon = buildPolygon(t_center, data.hole_ex.diameter_long, b_center, data.hole_en.diameter_long);
+	polygon = buildPolygon(t_center, diameter_ex, b_center, diameter_en);
 
 	block2->setPolygon(polygon);
 
 	// block left
-	t_center.setX((data.hole_ex.diameter_long + data.hole_ex.septa_long) * -1.0);
-    b_center.setX((data.hole_en.diameter_long + data.hole_ex.septa_long) * -1.0);
+	t_center.setX((diameter_ex + septa_ex) * -1.0);
+    b_center.setX((diameter_en + septa_ex) * -1.0);
 
-	polygon = buildPolygon(t_center, data.hole_ex.diameter_long, b_center, data.hole_en.diameter_long);
+	polygon = buildPolygon(t_center, diameter_ex, b_center, diameter_en);
 
 	block3->setPolygon(polygon);
 }
