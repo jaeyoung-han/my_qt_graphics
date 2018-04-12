@@ -6,11 +6,11 @@
 #include "DoubleSpinBoxSliderWidget.h"
 #include "UmbraWidget.h"
 
-class QDoubleSpinBox;
-class QRadioButton;
-class QLabel;
 class QCheckBox;
+class QDoubleSpinBox;
 class QGroupBox;
+class QLabel;
+class QRadioButton;
 
 class DockCollimator : public QDockWidget
 {
@@ -35,6 +35,7 @@ protected:
 private slots:
 	void parameterUpdated();
 	void sectionUpdated();
+    void updateUI();
 
 private:
     QRadioButton* rb_shape_hexagon;
@@ -49,17 +50,37 @@ private:
 	LCR::DoubleSpinBoxSliderWidget* dsb_length;
 	LCR::DoubleSpinBoxSliderWidget* dsb_width;
 	LCR::DoubleSpinBoxSliderWidget* dsb_height;
-	LCR::DoubleSpinBoxSliderWidget* dsb_focus;
 
-	LCR::DoubleSpinBoxSliderWidget* dsb_diameter[2];
-	LCR::DoubleSpinBoxSliderWidget* dsb_septa1;
+    QCheckBox* cb_symmetric;
+    QCheckBox* cb_iso_focus;
 
-	QLabel* dsb_septa2;
+	LCR::DoubleSpinBoxSliderWidget* dsb_focus_coll_l;
+    LCR::DoubleSpinBoxSliderWidget* dsb_focus_coll_w;
+    LCR::DoubleSpinBoxSliderWidget* dsb_focus_hole_l;
+    LCR::DoubleSpinBoxSliderWidget* dsb_focus_hole_w;
+
+	LCR::DoubleSpinBoxSliderWidget* dsb_diameter_l;
+    LCR::DoubleSpinBoxSliderWidget* dsb_diameter_w;
+    LCR::DoubleSpinBoxSliderWidget* dsb_septa_l;
+    LCR::DoubleSpinBoxSliderWidget* dsb_septa_w;
+    QGroupBox* gb_transverse;
+
+    QLabel* lb_en_diameter_long;
+    QLabel* lb_en_diameter_tran;
+    QLabel* lb_en_septa_long;
+    QLabel* lb_en_septa_tran;
+
 	QCheckBox* cb_conv_div_mix;
 
 	LCR::DoubleSpinBoxSliderWidget* dsb_section_height;
-	QLabel* lb_sec_diameter;
-	QLabel* lb_sec_thickness;
+	QLabel* lb_sec_diameter_long;
+    QLabel* lb_sec_diameter_tran;
+    QLabel* lb_sec_septa_long;
+    QLabel* lb_sec_septa_tran;
+
+    LCR::DoubleSpinBoxSliderWidget* dsb_anode_depth;
+    QLabel* lb_anode_diameter_long;
+    QLabel* lb_anode_diameter_tran;
 
 	QLabel* lb_x_side_open_area;
 	QLabel* lb_x_side_hole_num;

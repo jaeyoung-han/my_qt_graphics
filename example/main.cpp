@@ -13,10 +13,9 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
     QCoreApplication::setApplicationName("Collimator View - DEBUG");
 #endif
+    QCoreApplication::setOrganizationName("TeleSecurity Sciences, Inc.");
 
-  QCoreApplication::setOrganizationName("TeleSecurity Sciences, Inc.");
-
-  MainWindow w;
-  w.show();
-  return app.exec();
+    MainWindow w;
+    w.show();
+    return app.exec();
 }

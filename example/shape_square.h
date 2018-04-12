@@ -17,7 +17,8 @@ namespace LCR {
         explicit SquareShape() : SectionShape() {}
 
         void setCollimatorSize(const CollimatorEx& size);
-        void setParameters(double diameter, double septa, int direction);
+        //void setParameters(double diameter, double septa, int direction);
+        void setParameters(double diameter[2], double septa[2], int direction);
 
         QList<QGraphicsItem*> buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag);
 
@@ -32,8 +33,10 @@ namespace LCR {
         bool checkPointInAir(QPointF point, QPointF rect_center);
 
     private:
-        double diameter;  // inscribed circle
-        double septa;
+        //double diameter;  // inscribed circle
+        double diameter_x, diameter_y;
+        //double septa;
+        double septa_x, septa_y;
         int direction;
 
         CollimatorEx size_;

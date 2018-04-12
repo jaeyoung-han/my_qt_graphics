@@ -14,8 +14,10 @@ CollimatorHorizontalSectionView::CollimatorHorizontalSectionView(double ins_diam
     , shaper_(nullptr)
     , hex_group(Q_NULLPTR)
     , base_rect(Q_NULLPTR)
-    , diameter(ins_diameter)
-    , septa(_septa)
+    , diameter_x(ins_diameter)
+    , diameter_y(ins_diameter)
+    , septa_x(_septa)
+    , septa_y(_septa)
     , direction(_direction)
 {
     setAxisVisible(false);
@@ -93,19 +95,21 @@ bool CollimatorHorizontalSectionView::changeShape(int shape)
     return true;
 }
 
-void CollimatorHorizontalSectionView::setCollimatorSize(const CollimatorEx& size, double ratio)
+void CollimatorHorizontalSectionView::setCollimatorSize(const CollimatorEx& size, double height)
 {
     size_ = size.size;
-    shrink_size_.x = size.size.x * ratio;
-    shrink_size_.y = size.size.y * ratio;
+    shrink_size_.x = size.size.x * (size.focus_coll_long - height) / size.focus_coll_long;
+    shrink_size_.y = size.size.y * (size.focus_coll_tran - height) / size.focus_coll_tran;
     shrink_size_.z = size.size.z;
     shaper_->setCollimatorSize(size);
 }
 
-void CollimatorHorizontalSectionView::setParameters(double _diameter, double _septa, int _direction)
+void CollimatorHorizontalSectionView::setParameters(double _diameter[2], double _septa[2], int _direction)
 {
-    diameter = _diameter;
-    septa = _septa;
+    diameter_x = _diameter[0];
+    diameter_y = _diameter[1];
+    septa_x = _septa[0];
+    septa_y = _septa[1];
     direction = _direction;
 
     shaper_->setParameters(_diameter, _septa, _direction);
@@ -113,7 +117,7 @@ void CollimatorHorizontalSectionView::setParameters(double _diameter, double _se
 
 void CollimatorHorizontalSectionView::updateBase()
 {
-    if (septa < 0) {
+    if (septa_x < 0 && septa_y < 0 && shaper_->type() != 12) {
         QBrush brush(Qt::white);
         base_rect->setBrush(brush);
     }
@@ -148,12 +152,12 @@ void CollimatorHorizontalSectionView::buildHoles()
 
     hex_list.clear();
 
-    if (septa < 0) {
+    if (septa_x < 0 && septa_y < 0 && shaper_->type() != 12) {
         updateBase();
         return;
     }
 
-    if (diameter > 0) {
+    if (diameter_x > 0 && diameter_y > 0) {
         hex_list = shaper_->buildHoles(scene(), getOrigin(), getScale(), direction);
         hex_group = scene()->createItemGroup(hex_list);
     }
@@ -180,7 +184,7 @@ void CollimatorHorizontalSectionView::draw_outside()
     QRectF brect = this->base_rect->rect();
     QRectF rect = brect;
     QPointF pos = base_rect->pos();
-    qreal pdia = diameter * 2 / sqrt(3) * getScale();
+    qreal pdia = diameter_x * 2 / sqrt(3) * getScale();
 
     // Top
     rect.setWidth(brect.width() + pdia);
@@ -211,5 +215,4 @@ void CollimatorHorizontalSectionView::draw_outside()
     // Shrinked boundary
     shrink_rect->setRect(shrink_size_.x * getScale() * -0.5, shrink_size_.y * getScale() * -0.5, shrink_size_.x * getScale(), shrink_size_.y * getScale());
     shrink_rect->setPos(realToPixel(0, 0));
-
 }

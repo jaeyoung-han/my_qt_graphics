@@ -25,7 +25,7 @@ namespace LCR {
         CollimatorHorizontalSectionView(double ins_diameter = 0, double _septa = 0, int _direction = 0, QWidget *parent = Q_NULLPTR);
 
         void setCollimatorSize(const CollimatorEx& size, double ratio);
-        void setParameters(double diameter, double septa, int direction);
+        void setParameters(double diameter[2], double septa[2], int direction);
 
         void buildHoles();
         void updateBase();
@@ -59,8 +59,10 @@ namespace LCR {
 
         QGraphicsEllipseItem* circle;
 
-        double diameter;  // inscribed circle
-        double septa;
+        //double diameter;  // inscribed circle
+        //double septa;
+        double diameter_x, diameter_y;
+        double septa_x, septa_y;
         int direction;
 
         v3 size_;

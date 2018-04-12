@@ -20,9 +20,12 @@ namespace LCR {
 		void setRange(double min, double max);
 		void setDecimals(int prec);
 		void setSingleStep(double val);
-		void setValue(double value);
 		void setText(const QString& text);
+        void setPrefix(const QString& prefix);
 		double value() const;
+
+    public slots:
+        void setValue(double value);
 
 	signals:
 		void valueChanged(double value);

@@ -58,6 +58,11 @@ void DoubleSpinBoxSliderWidget::setText(const QString& text)
 	_label->setText(text);
 }
 
+void DoubleSpinBoxSliderWidget::setPrefix(const QString& prefix)
+{
+    _spinBox->setPrefix(prefix);
+}
+
 double DoubleSpinBoxSliderWidget::value() const
 {
 	return _spinBox->value();

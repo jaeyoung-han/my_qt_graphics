@@ -11,11 +11,22 @@ void HexagonShape::setCollimatorSize(const CollimatorEx& size)
 	size_ = size;
 }
 
-void HexagonShape::setParameters(double _diameter, double _septa, int _direction)
+//void HexagonShape::setParameters(double _diameter, double _septa, int _direction)
+//{
+//    diameter_x = _diameter;
+//    diameter_y = _diameter;
+//    septa_x = _septa;
+//    septa_y = _septa;
+//    direction = _direction;
+//}
+
+void HexagonShape::setParameters(double _diameter[2], double _septa[2], int _direction)
 {
-	diameter = _diameter;
-	septa = _septa;
-	direction = _direction;
+    diameter_x = _diameter[0];
+    diameter_y = _diameter[1];
+    septa_x = _septa[0];
+    septa_y = _septa[1];
+    direction = _direction;
 }
 
 inline int positive_modulo(int i, int n) {
@@ -41,20 +52,20 @@ QList<QGraphicsItem*> HexagonShape::build_horizontal(QGraphicsScene* scene)
 	QPen pen2(Qt::red);
 	QBrush brush(Qt::white, Qt::SolidPattern);
 
-	qreal circum_diameter = diameter * 2 / sqrt(3);
+	qreal circum_diameter = diameter_x * 2 / sqrt(3);
 	qreal scale = getScale();
 
 	qreal circum_diameter2 = circum_diameter;// (diameter + 2 * (septa - 0.3)) * 2 / sqrt(3);
 
-	qreal delX = sqrt(3) * (diameter + septa) / 2;
-	qreal delY = (diameter + septa) / 2;
+	qreal delX = sqrt(3) * (diameter_x + septa_x) / 2;
+	qreal delY = (diameter_y + septa_y) / 2;
 
 	qreal angle = 0;
 
 	// 1st quadrant
 	int j = 0;
 	qreal ypos = j * delY;
-	while (ypos - diameter / 2 < size_.size.y / 2) {
+	while (ypos - diameter_y / 2 < size_.size.y / 2) {
 
 		int iminidx = qAbs(j % 2);
 		qreal imin = iminidx * delX;
@@ -83,7 +94,7 @@ QList<QGraphicsItem*> HexagonShape::build_horizontal(QGraphicsScene* scene)
 	// 2nd quadrant
 	j = 0;
 	ypos = j * delY;
-	while (ypos - diameter / 2 < size_.size.y / 2) {
+	while (ypos - diameter_y / 2 < size_.size.y / 2) {
 
 		int iminidx = qAbs(j % 2);
 		qreal imin = iminidx * delX;
@@ -112,7 +123,7 @@ QList<QGraphicsItem*> HexagonShape::build_horizontal(QGraphicsScene* scene)
 	// 3rd quadrant
 	j = -1;
 	ypos = j * delY;
-	while (ypos + diameter / 2 > size_.size.y / -2) {
+	while (ypos + diameter_y / 2 > size_.size.y / -2) {
 
 		int iminidx = qAbs(j % 2);
 		qreal imin = iminidx * delX;
@@ -142,7 +153,7 @@ QList<QGraphicsItem*> HexagonShape::build_horizontal(QGraphicsScene* scene)
 	// 4th quadrant
 	j = -1;
 	ypos = j * delY;
-	while (ypos + diameter / 2 > size_.size.y / -2) {
+	while (ypos + diameter_y / 2 > size_.size.y / -2) {
 		int iminidx = qAbs(j % 2);
 		qreal imin = iminidx * delX;
 
@@ -179,20 +190,20 @@ QList<QGraphicsItem*> HexagonShape::build_vertical(QGraphicsScene* scene)
 	QPen pen2(Qt::red);
 	QBrush brush(Qt::white, Qt::SolidPattern);
 
-	qreal circum_diameter = diameter * 2 / sqrt(3);
+	qreal circum_diameter = diameter_x * 2 / sqrt(3);
 	qreal scale = getScale();
 
 	qreal circum_diameter2 = circum_diameter;// (diameter + 2 * (septa - 0.3)) * 2 / sqrt(3);
 
-	qreal delX = (diameter + septa) / 2;
-	qreal delY = sqrt(3) * (diameter + septa) / 2;
+	qreal delX = (diameter_x + septa_x) / 2;
+	qreal delY = sqrt(3) * (diameter_y + septa_y) / 2;
 
 	qreal angle = M_PI_2;
 
 	// 1st quadrant
 	int i = 0;
 	qreal xpos = i * delX;
-	while (xpos - diameter / 2 < size_.size.x / 2) {
+	while (xpos - diameter_x / 2 < size_.size.x / 2) {
 
 		int iminidx = qAbs(i % 2);
 		qreal imin = iminidx * delY;
@@ -222,7 +233,7 @@ QList<QGraphicsItem*> HexagonShape::build_vertical(QGraphicsScene* scene)
 	// 2nd quadrant
 	i = 0;
 	xpos = i * delX;
-	while (xpos - diameter / 2 < size_.size.x / 2) {
+	while (xpos - diameter_x / 2 < size_.size.x / 2) {
 
 		int iminidx = qAbs(i % 2);
 		qreal imin = iminidx * delY;
@@ -252,7 +263,7 @@ QList<QGraphicsItem*> HexagonShape::build_vertical(QGraphicsScene* scene)
 	// 3rd quadrant
 	i = -1;
 	xpos = i * delX;
-	while (xpos + diameter / 2 > size_.size.x / -2) {
+	while (xpos + diameter_x / 2 > size_.size.x / -2) {
 
 		int iminidx = qAbs(i % 2);
 		qreal imin = iminidx * delY;
@@ -282,7 +293,7 @@ QList<QGraphicsItem*> HexagonShape::build_vertical(QGraphicsScene* scene)
 	// 4th quadrant
 	i = -1;
 	xpos = i * delX;
-	while (xpos + diameter / 2 > size_.size.x / -2) {
+	while (xpos + diameter_x / 2 > size_.size.x / -2) {
 		int iminidx = qAbs(i % 2);
 		qreal imin = iminidx * delY;
 
@@ -316,7 +327,7 @@ QList<QGraphicsItem*> HexagonShape::build_vertical(QGraphicsScene* scene)
 
 bool HexagonShape::checkMousePointInAir(QPointF point)
 {
-    qreal h = size_.focus_distance - size_.section_height;
+//    qreal h = size_.focus_distance - size_.section_height;
     qreal x = qAbs(point.x());
     qreal y = qAbs(point.y());
 
@@ -330,12 +341,12 @@ bool HexagonShape::checkMousePointInAir(QPointF point)
 
 QPointF HexagonShape::getNearestHexagon(QPointF point)
 {
-    qreal H = 0.5f * (diameter + septa);
-    qreal W = SQRT_3 * H;
+    qreal H = 0.5f * (diameter_y + septa_y);
+    qreal W = SQRT_3 * 0.5f * (diameter_x + septa_x);
 
     if (size_.direction == 1) {
-        W = 0.5f * (diameter + septa);
-        H = SQRT_3 * W;
+        W = 0.5f * (diameter_x + septa_x);
+        H = SQRT_3 * 0.5f * (diameter_y + septa_y);
     }
 
     int i = (int)floor(point.x() / W);
@@ -369,8 +380,8 @@ QPointF HexagonShape::getNearestHexagon(QPointF point)
 
 bool HexagonShape::checkPointInAir(QPointF point, QPointF rect_center)
 {
-    qreal W = diameter * R_COS_PI_6;
-    qreal H = diameter;
+    qreal W = diameter_x * R_COS_PI_6;
+    qreal H = diameter_y;
 
     qreal x = qAbs(point.x() - rect_center.x());
     qreal y = qAbs(point.y() - rect_center.y());

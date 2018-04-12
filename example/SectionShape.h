@@ -12,7 +12,7 @@ namespace LCR {
         SectionShape() : scale_factor_(0), origin_(0, 0) {}
 
         virtual void setCollimatorSize(const CollimatorEx& size) = 0;
-		virtual void setParameters(double diameter, double septa, int direction) = 0;
+        virtual void setParameters(double diameter[2], double septa[2], int direction) = 0;
 
 		virtual QList<QGraphicsItem*> buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag) = 0;
         virtual int type() = 0;

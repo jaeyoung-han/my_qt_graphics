@@ -124,10 +124,10 @@ void UmbraView::update()
 
 void UmbraView::drawVerticalUmbra()
 {
-	QPointF tl(data.diameter[0] * -0.5, data.size.z);
-	QPointF tr(data.diameter[0] * 0.5, data.size.z);
-	QPointF bl(data.diameter[1] * -0.5, 0);
-	QPointF br(data.diameter[1] * 0.5, 0);
+	QPointF tl(data.hole_ex.diameter_long * -0.5, data.size.z);
+	QPointF tr(data.hole_ex.diameter_long *  0.5, data.size.z);
+	QPointF bl(data.hole_en.diameter_long * -0.5, 0);
+	QPointF br(data.hole_en.diameter_long *  0.5, 0);
 
 	QRectF rect;
 	QLineF line;
@@ -144,32 +144,32 @@ void UmbraView::drawVerticalUmbra()
 
 
 	// Umbra
-	x = getX(data.focus_distance, tl, bl);
-	QPointF ul(x, data.focus_distance);
-	x = getX(data.focus_distance, tr, br);
-	QPointF ur(x, data.focus_distance);
+	x = getX(data.focus_coll_long, tl, bl);
+	QPointF ul(x, data.focus_coll_long);
+	x = getX(data.focus_coll_long, tr, br);
+	QPointF ur(x, data.focus_coll_long);
 
-	x = getX(data.focus_distance, tl, br);
-	QPointF pl(x, data.focus_distance);
-	x = getX(data.focus_distance, tr, bl);
-	QPointF pr(x, data.focus_distance);
+	x = getX(data.focus_coll_long, tl, br);
+	QPointF pl(x, data.focus_coll_long);
+	x = getX(data.focus_coll_long, tr, bl);
+	QPointF pr(x, data.focus_coll_long);
 
 	line.setPoints(realToPixel(pl), realToPixel(pr));
 	detection_line->setLine(line);
 
 	x = qAbs(pl.x() - pr.x()) * 0.5;
-	rect.setBottomLeft(realToPixel(-x, data.focus_distance - x));
-	rect.setTopRight(realToPixel(x, data.focus_distance + x));
+	rect.setBottomLeft(realToPixel(-x, data.focus_coll_long - x));
+	rect.setTopRight(realToPixel(x, data.focus_coll_long + x));
 	penumbra_circle->setRect(rect);
 
 	x = qAbs(ul.x() - ur.x()) * 0.5;
-	rect.setBottomLeft(realToPixel(-x, data.focus_distance - x));
-	rect.setTopRight(realToPixel(x, data.focus_distance + x));
+	rect.setBottomLeft(realToPixel(-x, data.focus_coll_long - x));
+	rect.setTopRight(realToPixel(x, data.focus_coll_long + x));
 	umbra_circle->setRect(rect);
 
 	x = (qAbs(ul.x() - ur.x()) * 0.5 + qAbs(pl.x() - pr.x()) * 0.5) * 0.5;
-	rect.setBottomLeft(realToPixel(-x, data.focus_distance - x));
-	rect.setTopRight(realToPixel(x, data.focus_distance + x));
+	rect.setBottomLeft(realToPixel(-x, data.focus_coll_long - x));
+	rect.setTopRight(realToPixel(x, data.focus_coll_long + x));
 	middle_circle->setRect(rect);
 
 
@@ -207,23 +207,23 @@ void UmbraView::drawVerticalSection()
 	QPointF t_center(0, data.size.z);
 	QPointF b_center(0, 0);
 
-	QPolygonF polygon = buildPolygon(t_center, data.diameter[0], b_center, data.diameter[1]);
+	QPolygonF polygon = buildPolygon(t_center, data.hole_ex.diameter_long, b_center, data.hole_en.diameter_long);
 
 	block1->setPolygon(polygon);
 
 	// block right
-	t_center.setX(data.diameter[0] + data.septa[0]);
-	b_center.setX(data.diameter[1] + data.septa[1]);
+	t_center.setX(data.hole_ex.diameter_long + data.hole_ex.septa_long);
+	b_center.setX(data.hole_en.diameter_long + data.hole_ex.septa_long);
 
-	polygon = buildPolygon(t_center, data.diameter[0], b_center, data.diameter[1]);
+	polygon = buildPolygon(t_center, data.hole_ex.diameter_long, b_center, data.hole_en.diameter_long);
 
 	block2->setPolygon(polygon);
 
 	// block left
-	t_center.setX((data.diameter[0] + data.septa[0]) * -1.0);
-	b_center.setX((data.diameter[1] + data.septa[1]) * -1.0);
+	t_center.setX((data.hole_ex.diameter_long + data.hole_ex.septa_long) * -1.0);
+    b_center.setX((data.hole_en.diameter_long + data.hole_ex.septa_long) * -1.0);
 
-	polygon = buildPolygon(t_center, data.diameter[0], b_center, data.diameter[1]);
+	polygon = buildPolygon(t_center, data.hole_ex.diameter_long, b_center, data.hole_en.diameter_long);
 
 	block3->setPolygon(polygon);
 }

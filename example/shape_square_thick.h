@@ -22,7 +22,8 @@ namespace LCR {
         explicit ShapeSquareThick() : SectionShape() {}
 
         void setCollimatorSize(const CollimatorEx& size);
-        void setParameters(double diameter, double septa, int direction);
+        //void setParameters(double diameter, double septa, int direction);
+        void setParameters(double diameter[2], double septa[2], int direction);
 
         QList<QGraphicsItem*> buildHoles(QGraphicsScene* scene, QPointF origin, qreal scale_factor, int flag);
 

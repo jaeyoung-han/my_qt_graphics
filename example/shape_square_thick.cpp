@@ -11,11 +11,17 @@ void ShapeSquareThick::setCollimatorSize(const CollimatorEx& size)
     size_ = size;
 }
 
-void ShapeSquareThick::setParameters(double _diameter, double _septa, int _direction)
+//void ShapeSquareThick::setParameters(double _diameter, double _septa, int _direction)
+//{
+//    //diameter = _diameter;
+//    //septa = _septa;
+//    //direction = _direction;
+//
+//    updateAngles();
+//}
+
+void ShapeSquareThick::setParameters(double _diameter[2], double _septa[2], int _direction)
 {
-    //diameter = _diameter;
-    //septa = _septa;
-    //direction = _direction;
 
     updateAngles();
 }
@@ -30,13 +36,13 @@ QList<QGraphicsItem*> ShapeSquareThick::buildHoles(QGraphicsScene* scene, QPoint
 
 void ShapeSquareThick::updateAngles()
 {
-    qreal diameter = size_.diameter[0];
-    qreal septa = size_.septa[0];
-    qreal b = size_.focus_distance - size_.size.z;
+    qreal diameter = size_.hole_ex.diameter_long;
+    qreal septa = size_.hole_ex.septa_long;
+    qreal b = size_.focus_coll_long - size_.size.z;
     qreal bb = b * b;
 
     x_wallangles_.clear();
-    qreal x_size = b / size_.focus_distance * size_.size.x / 2;
+    qreal x_size = b / size_.focus_coll_long * size_.size.x / 2;
     qreal xpos = 0;
     while (xpos < x_size + diameter / 2) {
         WallAngle wa;
@@ -50,7 +56,7 @@ void ShapeSquareThick::updateAngles()
     }
 
     y_wallangles_.clear();
-    qreal y_size = b / size_.focus_distance * size_.size.y / 2;
+    qreal y_size = b / size_.focus_coll_long * size_.size.y / 2;
     qreal ypos = 0;
     while (ypos < y_size + diameter / 2) {
         WallAngle wa;
@@ -74,7 +80,7 @@ QList<QGraphicsItem*> ShapeSquareThick::build_horizontal(QGraphicsScene* scene)
 
     qreal scale = getScale();
     v3 size = size_.size;
-    qreal b = size_.focus_distance - size_.section_height;
+    qreal b = size_.focus_coll_long - size_.hole_sec.z;
 
     // Y = 0
     qreal size_x = x_wallangles_[0].tangent * b * 2 - x_wallangles_[0].thick_in_plane;
@@ -208,7 +214,7 @@ void ShapeSquareThick::updateMousePos(QPointF point)
 
 bool ShapeSquareThick::checkMousePointInAir(QPointF point)
 {
-    qreal h = size_.focus_distance - size_.section_height;
+    qreal h = size_.focus_coll_long - size_.hole_sec.z;
     qreal x = qAbs(point.x());
     qreal y = qAbs(point.y());
 
@@ -220,7 +226,7 @@ bool ShapeSquareThick::checkMousePointInAir(QPointF point)
 
 bool ShapeSquareThick::checkInX(qreal abs_x)
 {
-    qreal h = size_.focus_distance - size_.section_height;
+    qreal h = size_.focus_coll_long - size_.hole_sec.z;
 
     if (abs_x < x_wallangles_[0].tangent * h - x_wallangles_[0].thick_in_plane * 0.5) {
         return true;
@@ -246,7 +252,7 @@ bool ShapeSquareThick::checkInX(qreal abs_x)
 
 bool ShapeSquareThick::checkInY(qreal abs_y)
 {
-    qreal h = size_.focus_distance - size_.section_height;
+    qreal h = size_.focus_coll_long - size_.hole_sec.z;
 
     if (abs_y < y_wallangles_[0].tangent * h - y_wallangles_[0].thick_in_plane * 0.5) {
         return true;
